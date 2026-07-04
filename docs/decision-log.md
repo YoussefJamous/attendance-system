@@ -1,47 +1,366 @@
 # Decision Log
 
-## Decision #1
+This document records important architectural decisions made throughout the project.
 
-### Topic
-
-Project Architecture
-
-### Decision
-
-Business logic will be implemented inside Services.
-
-### Reason
-
-Keeps controllers thin and improves maintainability.
+The purpose of this document is to avoid re-discussing previously resolved topics and to explain the reasoning behind major technical decisions.
 
 ---
 
-## Decision #2
+# ADR-001
 
-### Topic
+## Title
 
-API Testing
+Service-Based Architecture
 
-### Decision
+## Status
+
+Accepted
+
+## Decision
+
+Business logic will be implemented inside Service classes.
+
+Controllers are responsible only for coordinating requests and responses.
+
+## Reason
+
+Keeping controllers thin improves readability, maintainability, and testability.
+
+## Alternatives Considered
+
+- Business logic inside Controllers
+- Repository Pattern
+
+## Impact
+
+All business operations should be implemented inside the appropriate Service class.
+
+---
+
+# ADR-002
+
+## Title
+
+API Versioning
+
+## Status
+
+Accepted
+
+## Decision
+
+All API endpoints will be versioned.
+
+The first version will be:
+
+/api/v1
+
+Controllers will be placed inside:
+
+App\Http\Controllers\API\V1
+
+## Reason
+
+API versioning allows future changes without breaking existing clients.
+
+## Alternatives Considered
+
+- Unversioned API
+
+## Impact
+
+Every new endpoint must belong to an API version.
+
+---
+
+# ADR-003
+
+## Title
+
+Git Branching Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+The project follows the following branching strategy:
+
+main
+
+↓
+
+develop
+
+↓
+
+feature/*
+
+Every feature is implemented in its own branch.
+
+## Reason
+
+Provides better organization, isolated development, and cleaner Git history.
+
+## Alternatives Considered
+
+- Development directly on develop
+- GitHub Flow
+
+## Impact
+
+No feature should be developed directly on develop.
+
+---
+
+# ADR-004
+
+## Title
+
+Merge Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+Feature branches must be merged using:
+
+git merge --no-ff
+
+## Reason
+
+Preserves the history of each feature branch and produces a clearer Git graph.
+
+## Alternatives Considered
+
+Fast-forward merge.
+
+## Impact
+
+Every completed feature should appear as an independent merge in Git history.
+
+---
+
+# ADR-005
+
+## Title
+
+API Testing Tool
+
+## Status
+
+Accepted
+
+## Decision
 
 Bruno will be used for API testing.
 
-### Reason
+Collections will be stored inside the repository.
 
-Bruno collections are stored inside the repository and version controlled using Git.
+## Reason
+
+Bruno stores collections as plain text files, making them easy to version using Git.
+
+## Alternatives Considered
+
+- Postman
+- Insomnia
+
+## Impact
+
+API collections become part of the project source code.
 
 ---
 
-## Decision #3
+# ADR-006
 
-### Topic
+## Title
 
-Git Workflow
+Response Architecture
 
-### Decision
+## Status
 
-Use feature branches for all development.
+Accepted
 
-### Reason
+## Decision
 
-Improves organization and allows isolated development.
+API responses must be returned using Laravel Resources.
+
+Controllers must not return Eloquent models directly.
+
+## Reason
+
+Resources provide a consistent API response format.
+
+## Alternatives Considered
+
+Returning Models directly.
+
+## Impact
+
+Every API endpoint should have a corresponding Resource.
+
+---
+
+# ADR-007
+
+## Title
+
+Validation Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+Input validation will be implemented using Form Requests.
+
+Validation must not be performed inside Controllers.
+
+## Reason
+
+Separates validation from business logic.
+
+## Alternatives Considered
+
+Validation inside Controllers.
+
+## Impact
+
+Every endpoint that accepts input should have its own Form Request.
+
+---
+
+# ADR-008
+
+## Title
+
+Authorization Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+Authorization will be handled using Laravel Policies.
+
+## Reason
+
+Policies provide centralized authorization rules.
+
+## Alternatives Considered
+
+Authorization inside Controllers or Services.
+
+## Impact
+
+Controllers should call Policies when authorization is required.
+
+---
+
+# ADR-009
+
+## Title
+
+Role and Permission Management
+
+## Status
+
+Accepted
+
+## Decision
+
+The project will use the spatie/laravel-permission package.
+
+## Reason
+
+It is the Laravel community standard and provides a flexible role and permission system.
+
+## Alternatives Considered
+
+Building a custom role system.
+
+## Impact
+
+Roles and permissions will not be implemented manually.
+
+---
+
+# ADR-010
+
+## Title
+
+Attendance Status Representation
+
+## Status
+
+Accepted
+
+## Decision
+
+Attendance status values will be represented using:
+
+- PHP Enums
+- Database ENUM columns
+
+Database ENUM values will be generated from the PHP Enum class.
+
+Example:
+
+AttendanceStatus::values()
+
+## Reason
+
+Keeps PHP and database values synchronized while enforcing valid database values.
+
+## Alternatives Considered
+
+VARCHAR columns with PHP Enums only.
+
+## Impact
+
+Whenever a new status is added, both the Enum and a database migration must be updated.
+
+---
+
+# ADR-011
+
+## Title
+
+Leave Balance Unit
+
+## Status
+
+Accepted
+
+## Decision
+
+Leave balances will be stored as DECIMAL values representing days.
+
+Example:
+
+14.00
+
+13.50
+
+12.00
+
+## Reason
+
+The company currently measures leave in days rather than hours.
+
+Using DECIMAL allows half-day leave while keeping the implementation simple.
+
+## Alternatives Considered
+
+- Hours
+- Minutes
+
+## Impact
+
+If the company later adopts hourly leave, the migration effort will be manageable.
