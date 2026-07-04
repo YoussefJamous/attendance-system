@@ -1,32 +1,202 @@
 # Coding Standards
 
-## Controllers
+This document defines the project's coding conventions and architectural rules.
 
-- Controllers should remain thin.
-- Controllers coordinate requests only.
-- Controllers should not contain business logic.
+---
 
-## Form Requests
+# General Principles
 
-- Every endpoint that accepts input should use a Form Request.
-- Validation must not be performed inside controllers.
+- Prefer simplicity over unnecessary abstraction.
+- Follow Laravel conventions whenever possible.
+- Avoid premature optimization.
+- Keep the code readable.
+- Every class should have a single responsibility.
 
-## Services
+---
 
-- Business logic belongs inside Services.
-- Services must not return HTTP responses.
+# Controllers
 
-## Resources
+Controllers should:
 
-- API responses should always use Resources.
-- Never return Eloquent models directly.
+- Coordinate requests.
+- Call Services.
+- Return Resources.
+- Perform authorization.
 
-## Policies
+Controllers should NOT:
 
-- Authorization belongs inside Policies.
-- Services should not perform authorization checks.
+- Contain business logic.
+- Perform validation.
+- Execute complex database queries.
 
-## Models
+---
 
-- Models represent database entities.
-- Keep models focused on relationships, scopes, and small helper methods.
+# Form Requests
+
+Every endpoint that accepts user input should use a dedicated Form Request.
+
+Validation belongs inside Form Requests.
+
+---
+
+# Services
+
+Services contain business logic.
+
+Services should:
+
+- Perform business operations.
+- Interact with Models.
+- Throw business exceptions when necessary.
+
+Services should NOT:
+
+- Return HTTP responses.
+- Read data directly from the Request object.
+- Perform authorization.
+
+---
+
+# Models
+
+Models represent database entities.
+
+Models may contain:
+
+- Relationships
+- Query scopes
+- Attribute casting
+- Small helper methods
+
+Models should NOT contain business workflows.
+
+---
+
+# Resources
+
+Resources are responsible for transforming Models into API responses.
+
+Never return Eloquent models directly.
+
+---
+
+# Policies
+
+Policies are responsible for authorization.
+
+Authorization should not be duplicated inside Services.
+
+---
+
+# Validation
+
+Validation should only exist inside Form Requests.
+
+---
+
+# Enums
+
+Application constants should be represented using PHP Enums.
+
+Whenever possible, database ENUM values should be generated from the PHP Enum.
+
+Example:
+
+```php
+$table->enum(
+    'status',
+    AttendanceStatus::values()
+);
+```
+
+---
+
+# API Responses
+
+Responses should remain consistent across the application.
+
+Every response should contain:
+
+- success
+- message
+- data
+
+Validation responses may also contain:
+
+- errors
+
+---
+
+# Naming Conventions
+
+Controllers
+
+```
+AttendanceController
+```
+
+Services
+
+```
+AttendanceService
+```
+
+Requests
+
+```
+StoreAttendanceRequest
+```
+
+Resources
+
+```
+AttendanceResource
+```
+
+Policies
+
+```
+AttendancePolicy
+```
+
+Enums
+
+```
+AttendanceStatus
+```
+
+---
+
+# Architecture Rules
+
+The project follows this architecture.
+
+```
+Controller
+        ↓
+Form Request
+        ↓
+Service
+        ↓
+Model
+        ↓
+Resource
+```
+
+Business logic should never bypass this flow without a valid reason.
+
+---
+
+# YAGNI Principle
+
+The project follows the YAGNI principle.
+
+Do not introduce additional architectural patterns until they solve a real problem.
+
+Examples:
+
+- No Repository Pattern unless justified.
+- No Action classes until Services become too large.
+- No Traits unless code duplication exists.
+
+The simplest solution that satisfies the requirements should be preferred.
