@@ -1,37 +1,22 @@
-# Project Roadmap
+# Roadmap
 
-## Phase 1
+## Completed
 
-Project Architecture
+- [x] Project Setup
+- [x] Project Architecture
 
-## Phase 2
+## In Progress
 
-Authentication
+- [ ] Infrastructure
 
-## Phase 3
+## Planned
 
-Employee Management
-
-## Phase 4
-
-Attendance
-
-## Phase 5
-
-Leave Management
-
-## Phase 6
-
-Attendance Correction
-
-## Phase 7
-
-Reports
-
-## Phase 8
-
-Notifications
-
-## Phase 9
-
-Manager Module
+- [ ] Authentication
+- [ ] Employee Management
+- [ ] Attendance
+- [ ] Leave Management
+- [ ] Attendance Corrections
+- [ ] Overtime
+- [ ] Reports
+- [ ] Notifications
+- [ ] Manager Module

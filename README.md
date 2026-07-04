@@ -1,31 +1,112 @@
 # Attendance System API
 
-Attendance Management System built with Laravel 13.
+A RESTful Attendance Management System built with Laravel 13.
+
+The project is designed following modern software engineering practices with a strong focus on maintainability, clean architecture, and scalability.
+
+---
+
+## Features
+
+- Employee Attendance
+- Leave Management
+- Attendance Corrections
+- Overtime Requests
+- Department Management
+- Role & Permission Management
+- Reporting
+- Notifications (Planned)
+
+---
 
 ## Tech Stack
 
-- Laravel 13
 - PHP 8.3
+- Laravel 13
 - MySQL
 - Laravel Sanctum
-- Bruno
+- Spatie Laravel Permission
+- Bruno API Client
 
-## Project Documentation
+---
 
-See the `docs` directory for:
+## Project Structure
+
+```
+Controller
+        ↓
+Form Request
+        ↓
+Service
+        ↓
+Model
+        ↓
+Resource
+```
+
+---
+
+## Documentation
+
+Project documentation can be found inside the `docs` directory.
 
 - Architecture
+- Business Rules
 - Coding Standards
-- Branching Strategy
-- API Guidelines
 - Database Design
+- Development Workflow
+- Decision Log
 - Roadmap
 
-## Development Workflow
+---
 
-This project follows:
+## Git Workflow
 
-- Git Flow (main / develop / feature/*)
-- Conventional Commits
-- Service-based architecture
-- API versioning (`/api/v1`)
+The project follows a feature branch workflow.
+
+```
+main
+    │
+develop
+    │
+feature/*
+```
+
+Feature branches are merged into `develop` using:
+
+```bash
+git merge --no-ff feature/<branch-name>
+```
+
+---
+
+## Commit Convention
+
+The project follows Conventional Commits.
+
+| Type | Description |
+|------|-------------|
+| feat | New feature |
+| fix | Bug fix |
+| docs | Documentation |
+| refactor | Code improvements without changing behavior |
+| test | Tests |
+| chore | Project maintenance |
+
+Examples
+
+```text
+feat: implement attendance clock-in
+
+fix: prevent duplicate attendance
+
+docs: update business rules
+
+chore: install Laravel Sanctum
+```
+
+---
+
+## License
+
+This project is intended for educational and portfolio purposes.

@@ -1,38 +1,26 @@
-# Project Architecture
+# Architecture
 
-## Overview
-
-Attendance System is a RESTful API built with Laravel 13.
-
-The project follows a layered architecture where each layer has a single responsibility.
+The project follows a layered architecture.
 
 ```
 Controller
-    ↓
+        ↓
 Form Request
-    ↓
+        ↓
 Service
-    ↓
+        ↓
 Model
-    ↓
+        ↓
 Resource
 ```
 
-## Architecture Principles
+## Principles
 
-- Controllers coordinate requests only.
-- Validation is handled by Form Requests.
-- Business logic belongs inside Services.
-- Authorization is handled by Policies.
-- Models represent database entities.
-- API responses are returned using Resources.
-- API endpoints are versioned (`/api/v1`).
+- Controllers coordinate requests.
+- Services contain business logic.
+- Models represent data.
+- Resources transform responses.
+- Authorization is handled using Policies.
+- Validation is handled using Form Requests.
 
-## Future Considerations
-
-The architecture should remain scalable enough to support:
-
-- Manager module
-- Notifications
-- Payroll integration
-- Mobile application
+The project favors Laravel conventions over custom abstractions.
