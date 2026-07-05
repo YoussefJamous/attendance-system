@@ -4,12 +4,14 @@ The project follows a layered architecture.
 
 ```
 Controller
+│
+├── Web Controller
+│
+└── ApiController
         ↓
 Form Request
         ↓
 Service
-        ↓
-Model
         ↓
 Resource
 ```
