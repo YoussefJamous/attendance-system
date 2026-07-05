@@ -7,3 +7,14 @@ This document will contain:
 - Relationships
 - Constraints
 - Database decisions
+
+
+# Database Conventions
+
+## Primary Keys
+
+All tables use UUID as the primary key.
+
+## Foreign Keys
+
+Relationships between tables should use UUID foreign keys.

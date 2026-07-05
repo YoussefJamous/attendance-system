@@ -364,3 +364,22 @@ Using DECIMAL allows half-day leave while keeping the implementation simple.
 ## Impact
 
 If the company later adopts hourly leave, the migration effort will be manageable.
+
+# Decision-012
+
+## Title
+
+UUID Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+The project will use UUIDs as the primary key for all entities.
+UUIDs will be generated using Laravel's built-in UUID support.
+
+## Reason
+
+Using Laravel's built-in implementation follows the framework's conventions, minimizes custom code, and provides globally unique identifiers suitable for distributed systems.

@@ -30,3 +30,10 @@
 
 - Use PHP Enums.
 - Database ENUM values should reference the Enum class whenever possible.
+
+## Database
+
+- All primary keys use UUID.
+- The primary key column must be named `id`.
+- Foreign keys referencing UUIDs must use `foreignUuid()`.
+- UUID generation must use Laravel's built-in `HasUuids` trait.
