@@ -24,5 +24,6 @@ Resource
 - Resources transform responses.
 - Authorization is handled using Policies.
 - Validation is handled using Form Requests.
+- API exceptions are rendered using the standard API error response format.
 
 The project favors Laravel conventions over custom abstractions.

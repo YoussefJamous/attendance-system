@@ -4,10 +4,11 @@
 
 - [x] Project Setup
 - [x] Project Architecture
+- [x] Infrastructure
 
 ## In Progress
 
-- [ ] Infrastructure
+No active feature.
 
 ## Planned
 

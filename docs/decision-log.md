@@ -383,3 +383,38 @@ UUIDs will be generated using Laravel's built-in UUID support.
 ## Reason
 
 Using Laravel's built-in implementation follows the framework's conventions, minimizes custom code, and provides globally unique identifiers suitable for distributed systems.
+
+---
+
+# ADR-013
+
+## Title
+
+API Exception Response Format
+
+## Status
+
+Accepted
+
+## Decision
+
+API exceptions will be rendered using the same standard error response structure used by API controllers.
+
+The response must include:
+
+- success
+- message
+- errors, when validation or field-level details are available
+
+## Reason
+
+Clients should receive a predictable JSON structure for both expected controller responses and framework-level exceptions.
+
+## Alternatives Considered
+
+- Use Laravel's default exception response format.
+- Create a custom exception handler abstraction.
+
+## Impact
+
+Exception rendering should stay inside Laravel's exception configuration unless a future requirement creates a real need for a separate abstraction.

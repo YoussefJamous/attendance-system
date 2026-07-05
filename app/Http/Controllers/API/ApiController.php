@@ -8,15 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
-    protected function success(mixed $data = null, string $message = 'Request completed successfully.', int $status = Response::HTTP_OK): JsonResponse {
+    protected function success(mixed $data = null, string $message = 'Request completed successfully.', int $status = Response::HTTP_OK): JsonResponse
+    {
         return response()->json([
             'success' => true,
             'message' => $message,
-            'data'    => $data,
+            'data' => $data,
         ], $status);
     }
 
-    protected function error(string $message = 'Something went wrong.', int $status = Response::HTTP_BAD_REQUEST, mixed $errors = null): JsonResponse {
+    protected function error(string $message = 'Something went wrong.', int $status = Response::HTTP_BAD_REQUEST, mixed $errors = null): JsonResponse
+    {
         $response = [
             'success' => false,
             'message' => $message,
