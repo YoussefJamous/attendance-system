@@ -1,171 +1,44 @@
 # Development Workflow
 
-This document defines the standard development process for the Attendance System project.
-
----
-
-# Development Lifecycle
-
-Every feature should follow the same lifecycle.
-
-```
-Analyze
-    ↓
-Decide
-    ↓
-Document
-    ↓
-Implement
-    ↓
-Test
-    ↓
-Self Review
-    ↓
-Merge
-```
-
-The goal is to ensure every feature is properly designed before implementation.
-
----
-
-# Feature Development Workflow
-
-## Step 1
-
-Switch to the latest `develop` branch.
+## Start a Feature
 
 ```bash
 git checkout develop
 git pull origin develop
+git checkout -b feature/<feature-name>
 ```
 
 ---
 
-## Step 2
+## Development Process
 
-Create a feature branch.
+1. Analyze the feature.
+2. Make architectural decisions.
+3. Update documentation (if needed).
+4. Implement.
+5. Test with Bruno.
+6. Self-review.
 
-Example:
+---
+
+## Finish a Feature
 
 ```bash
-git checkout -b feature/authentication
-```
+git add .
 
----
+git commit -m "<type>: <message>"
 
-## Step 3
+git push -u origin feature/<feature-name>
 
-Analyze the feature.
-
-Before writing code:
-
-- Understand the business requirements.
-- Identify affected modules.
-- Review existing documentation.
-- Decide whether a new architectural decision is required.
-
----
-
-## Step 4
-
-Update documentation (if required).
-
-If the feature introduces a new architectural decision:
-
-- Update `decision-log.md`
-- Update any related documentation
-
-Documentation is part of the feature, not a separate task.
-
----
-
-## Step 5
-
-Implement the feature.
-
-Follow the project's coding standards.
-
----
-
-## Step 6
-
-Test the feature.
-
-API endpoints must be tested using Bruno before merging.
-
----
-
-## Step 7
-
-Self Review
-
-Before merging ask:
-
-- Does the code follow the coding standards?
-- Are controllers still thin?
-- Is business logic inside Services?
-- Was the API tested?
-- Was documentation updated?
-- Are there unnecessary abstractions?
-
----
-
-## Step 8
-
-Commit changes.
-
-Example:
-
-```bash
-git commit -m "feat: implement login endpoint"
-```
-
----
-
-## Step 9
-
-Push the feature branch.
-
-```bash
-git push -u origin feature/authentication
-```
-
----
-
-## Step 10
-
-Merge into `develop`.
-
-```bash
 git checkout develop
 
 git pull origin develop
 
-git merge --no-ff feature/authentication
+git merge --no-ff feature/<feature-name>
 
 git push origin develop
+
+git branch -d feature/<feature-name>
+
+git push origin --delete feature/<feature-name>
 ```
-
----
-
-## Step 11
-
-Delete the feature branch.
-
-```bash
-git branch -d feature/authentication
-
-git push origin --delete feature/authentication
-```
-
----
-
-# Merging into Main
-
-Only stable milestones should be merged into `main`.
-
-Example milestones:
-
-- Authentication
-- Employee Management
-- Attendance Module
