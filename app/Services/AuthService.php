@@ -33,4 +33,9 @@ class AuthService
     {
         $user->currentAccessToken()?->delete();
     }
+
+    public function authenticatedUser(User $user): User
+    {
+        return $user;
+    }
 }

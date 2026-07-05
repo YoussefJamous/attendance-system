@@ -115,4 +115,44 @@ class AuthenticationTest extends TestCase
                 'message' => 'Unauthenticated.',
             ]);
     }
+
+    public function test_authenticated_user_can_view_their_profile(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Youssef Jamous',
+            'email' => 'employee@example.com',
+        ]);
+
+        $response = $this
+            ->withToken($user->createToken('api-token')->plainTextToken)
+            ->getJson('/api/v1/auth/me');
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'Authenticated user retrieved successfully.',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => 'Youssef Jamous',
+                    'email' => 'employee@example.com',
+                ],
+            ])
+            ->assertJsonMissingPath('data.password')
+            ->assertJsonMissingPath('data.remember_token')
+            ->assertJsonMissingPath('data.created_at')
+            ->assertJsonMissingPath('data.updated_at');
+    }
+
+    public function test_guest_cannot_view_the_authenticated_user_profile(): void
+    {
+        $response = $this->getJson('/api/v1/auth/me');
+
+        $response
+            ->assertUnauthorized()
+            ->assertJson([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ]);
+    }
 }

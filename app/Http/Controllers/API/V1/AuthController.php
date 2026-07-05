@@ -34,4 +34,12 @@ class AuthController extends ApiController
             status: Response::HTTP_OK,
         );
     }
+
+    public function me(Request $request): JsonResponse
+    {
+        return $this->success(
+            new UserResource($this->authService->authenticatedUser($request->user())),
+            'Authenticated user retrieved successfully.',
+        );
+    }
 }
