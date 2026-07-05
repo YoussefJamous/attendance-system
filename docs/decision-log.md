@@ -418,3 +418,35 @@ Clients should receive a predictable JSON structure for both expected controller
 ## Impact
 
 Exception rendering should stay inside Laravel's exception configuration unless a future requirement creates a real need for a separate abstraction.
+
+---
+
+# ADR-014
+
+## Title
+
+API Authentication Strategy
+
+## Status
+
+Accepted
+
+## Decision
+
+API authentication will use Laravel Sanctum personal access tokens.
+
+Authentication endpoints will be implemented through thin API controllers, Form Requests for validation, AuthService for authentication logic, and Resources for user response data.
+
+## Reason
+
+Sanctum is Laravel's first-party solution for API token authentication and is already installed in the project. Keeping authentication logic inside AuthService follows the existing service-based architecture without adding extra abstractions.
+
+## Alternatives Considered
+
+- Laravel session authentication for API requests.
+- Custom token implementation.
+- JWT package.
+
+## Impact
+
+Protected API routes must use the auth:sanctum middleware. Authentication responses must continue using the standard API response format.

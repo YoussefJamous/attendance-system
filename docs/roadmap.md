@@ -8,11 +8,10 @@
 
 ## In Progress
 
-No active feature.
+- [ ] Authentication
 
 ## Planned
 
-- [ ] Authentication
 - [ ] Employee Management
 - [ ] Attendance
 - [ ] Leave Management
