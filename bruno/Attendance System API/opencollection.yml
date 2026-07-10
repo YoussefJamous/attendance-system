@@ -15,9 +15,13 @@ config:
       bypassProxy: ""
 
 request:
+  headers:
+    - name: Content-Type
+      value: application/json
+      disabled: true
   variables:
     - name: baseUrl
-      value: http://127.0.0.1:8001
+      value: http://127.0.0.1:8000/api/v1/
 bundled: false
 extensions:
   bruno:
