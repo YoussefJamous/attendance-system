@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -9,14 +10,13 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::query()->updateOrCreate(
-            ['email' => 'employee@example.com'],
-            [
-                'name' => 'Youssef Jamous',
-                'password' => 'Password123!',
-            ],
-        );
+        $hr = User::factory()->create([
+            'name' => 'HR User',
+            'email' => 'hr@example.com',
+        ]);
 
-        $this->command?->info('Seeded login user: employee@example.com / Password123!');
+        $hr->assignRole(Role::HR->value);
+
+        $this->command?->info('Seeded login user: hr@example.com / Password123!');
     }
 }

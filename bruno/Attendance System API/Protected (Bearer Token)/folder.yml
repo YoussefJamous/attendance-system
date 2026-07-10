@@ -1,0 +1,9 @@
+info:
+  name: Protected (Bearer Token)
+  type: folder
+  seq: 2
+
+request:
+  auth:
+    type: bearer
+    token: 7|lAisUX30z6CAHaCsS614s1Sqv7GNU9AHoP72si148be63938
