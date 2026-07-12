@@ -13,9 +13,7 @@ class AuthService
      */
     public function login(array $credentials): array
     {
-        $user = User::query()
-            ->where('email', $credentials['email'])
-            ->first();
+        $user = User::query()->with('roles')->where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -36,6 +34,6 @@ class AuthService
 
     public function authenticatedUser(User $user): User
     {
-        return $user;
+        return $user->with('roles', 'roles.permissions')->first();
     }
 }

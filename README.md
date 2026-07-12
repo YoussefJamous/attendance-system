@@ -92,6 +92,7 @@ The project follows Conventional Commits.
 | refactor | Code improvements without changing behavior |
 | test | Tests |
 | chore | Project maintenance |
+| wip | Work in progress |
 
 Examples
 

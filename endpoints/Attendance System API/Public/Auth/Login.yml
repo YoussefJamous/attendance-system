@@ -10,7 +10,7 @@ http:
     type: form-urlencoded
     data:
       - name: email
-        value: employee@example.com
+        value: hr@example.com
       - name: password
         value: Password123!
   auth: inherit
