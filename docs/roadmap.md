@@ -9,6 +9,7 @@
 ## In Progress
 
 - [ ] Authentication
+- [ ] Authorization
 
 ## Planned
 

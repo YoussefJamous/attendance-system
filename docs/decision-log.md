@@ -450,3 +450,59 @@ Sanctum is Laravel's first-party solution for API token authentication and is al
 ## Impact
 
 Protected API routes must use the auth:sanctum middleware. Authentication responses must continue using the standard API response format.
+
+# ADR-015
+
+## Title
+
+Separate Employee Data from User Accounts
+
+## Status
+
+Accepted
+
+## Decision
+
+The project will separate authentication data from employee information.
+
+The `users` table will contain only data related to authentication and authorization, such as:
+
+- id
+- email
+- password
+- authentication metadata
+
+Employee-specific information will be stored in a dedicated `employees` table.
+
+A user account will be associated with a single employee record.
+
+## Reason
+
+Authentication and employee management represent different business concerns.
+
+Separating them provides a clearer domain model and allows each table to evolve independently.
+
+Examples include:
+
+- Employee profile information
+- Employment details
+- Department assignment
+- Attendance
+- Leave management
+
+These belong to the employee domain rather than the authentication domain.
+
+This separation also keeps the authentication model small and focused while reducing future coupling between security-related data and business data.
+
+## Alternatives Considered
+
+Store all employee information in the `users` table.
+
+This approach was rejected because the table would gradually become responsible for both authentication and employee management, violating the single responsibility principle at the domain level.
+
+## Impact
+
+- `User` becomes the authentication identity.
+- `Employee` becomes the business entity.
+- Authentication continues to work through the `User` model.
+- Business modules (attendance, leave requests, departments, etc.) relate to `Employee` instead of `User`.
