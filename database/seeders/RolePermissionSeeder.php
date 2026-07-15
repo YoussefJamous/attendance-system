@@ -16,13 +16,14 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         $hr = SpatieRole::findByName(Role::HR->value);
-        $employee = SpatieRole::findByName(Role::EMPLOYEE->value); 
+        $employee = SpatieRole::findByName(Role::EMPLOYEE->value);
 
         $hr->syncPermissions([
             Permission::EMPLOYEES_VIEW->value,
             Permission::EMPLOYEES_CREATE->value,
             Permission::EMPLOYEES_UPDATE->value,
             Permission::EMPLOYEES_DELETE->value,
+            Permission::EMPLOYEES_RSTORE->value,
         ]);
 
         $employee->syncPermissions([

@@ -1,0 +1,15 @@
+info:
+  name: Delete Employee
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}employees\\019f63b4-6e22-7367-b4a6-229ccb54e14f"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

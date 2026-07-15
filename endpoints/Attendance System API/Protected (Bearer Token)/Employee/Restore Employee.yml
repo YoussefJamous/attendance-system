@@ -1,0 +1,21 @@
+info:
+  name: Restore Employee
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}employees\\restore\\019f63b4-6e22-7367-b4a6-229ccb54e14f"
+  body:
+    type: multipart-form
+    data:
+      - name: _method
+        type: text
+        value: PATCH
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
