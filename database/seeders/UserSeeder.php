@@ -12,15 +12,14 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $hr = User::factory()->create([
-            'name' => 'HR User',
             'email' => 'hr@example.com',
             'password' => Hash::make('Password123!'),
         ]);
         $hr->assignRole(Role::HR->value);
 
-        User::factory()->count(20)->employee()->create();
+        // User::factory()->count(20)->employee()->create();
 
         $this->command?->info('Seeded login user: hr@example.com / Password123!');
-        $this->command?->info('Seeded 20 employee users with Password123!');
+        // $this->command?->info('Seeded 20 employee users with Password123!');
     }
 }

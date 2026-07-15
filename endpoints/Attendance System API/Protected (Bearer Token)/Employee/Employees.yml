@@ -1,0 +1,39 @@
+info:
+  name: Employees
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}employees?search=f b"
+  params:
+    - name: per_page
+      value: "3"
+      type: query
+      disabled: true
+    - name: page
+      value: "4"
+      type: query
+      disabled: true
+    - name: sort_by
+      value: hire_date
+      type: query
+      disabled: true
+    - name: direction
+      value: desc
+      type: query
+      disabled: true
+    - name: gender
+      value: female
+      type: query
+      disabled: true
+    - name: search
+      value: f b
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

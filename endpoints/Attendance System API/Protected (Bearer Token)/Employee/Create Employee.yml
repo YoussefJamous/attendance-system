@@ -1,0 +1,48 @@
+info:
+  name: Create Employee
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}employees"
+  body:
+    type: multipart-form
+    data:
+      - name: first_name
+        type: text
+        value: Zaff
+      - name: last_name
+        type: text
+        value: Bint Ahmed
+      - name: email
+        type: text
+        value: zaf2@eagledigital.my
+      - name: phone
+        type: text
+        value: "+601169762667"
+      - name: address
+        type: text
+        value: Malaysia, KL, Ampang, Street number 5
+      - name: hire_date
+        type: text
+        value: 07-06-2026
+      - name: identity_document
+        type: file
+        value:
+          - C:\Users\WPD - 001\Pictures\Screenshots\Screenshot 2026-07-07 102852.png
+        contentType: image/png
+      - name: gender
+        type: text
+        value: female
+      - name: status
+        type: text
+        value: inactive
+        disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

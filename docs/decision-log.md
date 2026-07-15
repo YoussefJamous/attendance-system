@@ -506,3 +506,30 @@ This approach was rejected because the table would gradually become responsible 
 - `Employee` becomes the business entity.
 - Authentication continues to work through the `User` model.
 - Business modules (attendance, leave requests, departments, etc.) relate to `Employee` instead of `User`.
+
+# ADR-016
+
+## Title
+
+Employee Onboarding Creates User Account
+
+## Status
+
+Accepted
+
+## Decision
+
+Creating an employee will automatically create an associated user account with a randomly generated temporary password and assign the Employee role.
+
+## Reason
+
+Employees cannot register themselves. User account creation is part of the employee onboarding process performed by HR.
+
+## Alternatives Considered
+
+- Allow employee self-registration.
+- Create the user account separately after employee creation.
+
+## Impact
+
+Employee creation becomes a transactional operation involving both the `employees` and `users` tables.

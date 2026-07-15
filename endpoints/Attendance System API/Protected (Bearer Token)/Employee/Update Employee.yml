@@ -1,0 +1,56 @@
+info:
+  name: Update Employee
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}employees/019f6003-7e5b-714c-865d-3f9f971ec9ee"
+  body:
+    type: multipart-form
+    data:
+      - name: _method
+        type: text
+        value: PATCH
+      - name: first_name
+        type: text
+        value: zafs
+        disabled: true
+      - name: last_name
+        type: text
+        value: testing
+      - name: email
+        type: text
+        value: ""
+        disabled: true
+      - name: phone
+        type: text
+        value: ""
+        disabled: true
+      - name: address
+        type: text
+        value: ""
+        disabled: true
+      - name: hire_date
+        type: text
+        value: ""
+        disabled: true
+      - name: identity_document
+        type: text
+        value: ""
+        disabled: true
+      - name: status
+        type: text
+        value: ""
+        disabled: true
+      - name: gender
+        type: text
+        value: ""
+        disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
