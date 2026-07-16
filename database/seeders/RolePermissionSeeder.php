@@ -24,11 +24,16 @@ class RolePermissionSeeder extends Seeder
             Permission::EMPLOYEES_UPDATE->value,
             Permission::EMPLOYEES_DELETE->value,
             Permission::EMPLOYEES_RSTORE->value,
+            Permission::DEPARTMENTS_VIEW->value,
+            Permission::DEPARTMENTS_CREATE->value,
+            Permission::DEPARTMENTS_UPDATE->value,
+            Permission::DEPARTMENTS_DELETE->value,
         ]);
 
         $employee->syncPermissions([
             Permission::PROFILE_VIEW->value,
             Permission::PROFILE_UPDATE->value,
+            Permission::DEPARTMENTS_VIEW->value,
         ]);
     }
 }

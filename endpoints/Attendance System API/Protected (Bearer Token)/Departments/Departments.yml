@@ -1,11 +1,11 @@
 info:
-  name: Employees
+  name: Departments
   type: http
   seq: 1
 
 http:
   method: GET
-  url: "{{baseUrl}}employees"
+  url: "{{baseUrl}}departments"
   params:
     - name: per_page
       value: "3"
@@ -16,19 +16,15 @@ http:
       type: query
       disabled: true
     - name: sort_by
-      value: hire_date
+      value: employees_count
       type: query
       disabled: true
     - name: direction
       value: desc
       type: query
       disabled: true
-    - name: gender
-      value: female
-      type: query
-      disabled: true
     - name: search
-      value: f b
+      value: sm
       type: query
       disabled: true
   auth: inherit

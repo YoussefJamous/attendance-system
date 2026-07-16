@@ -1,0 +1,32 @@
+info:
+  name: Update Departments
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}departments/019f69fb-18c1-70f6-9c46-8a880e0ec6d8"
+  body:
+    type: multipart-form
+    data:
+      - name: _method
+        type: text
+        value: PATCH
+      - name: name
+        type: text
+        value: test3
+      - name: code
+        type: text
+        value: ""
+        disabled: true
+      - name: description
+        type: text
+        value: ""
+        disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

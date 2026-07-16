@@ -1,11 +1,11 @@
 info:
-  name: View Employee
+  name: View Department
   type: http
   seq: 2
 
 http:
   method: GET
-  url: "{{baseUrl}}employees\\019f68cd-e377-7127-a21b-25147d37c8eb"
+  url: "{{baseUrl}}departments\\019f69fb-18c1-70f6-9c46-8a880e0ec6d8"
   auth: inherit
 
 settings:

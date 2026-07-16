@@ -23,7 +23,7 @@ class EmployeeService
     public function index(array $filters, int $perPage): LengthAwarePaginator
     {
         $query = app(Pipeline::class)
-            ->send(Employee::query()->with('user'))
+            ->send(Employee::query()->with('user')->with('department'))
             ->through([
                 new SearchPipeline($filters['search'] ?? null),
                 new StatusFilterPipeline($filters['status'] ?? null),
@@ -56,6 +56,7 @@ class EmployeeService
             // Create the submitted employee
             $employeeData = [
                 'user_id' => $user->id,
+                'department_id' => $data['department_id'],
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'phone' => $data['phone'],
@@ -65,7 +66,7 @@ class EmployeeService
                 'identity_document_path' => $documentPath,
                 ...isset($data['status']) ? ['status' => $data['status']] : [],
             ];
-            $employee = Employee::create($employeeData)->refresh()->load('user');
+            $employee = Employee::create($employeeData)->refresh()->load('user')->load('department');
 
 
             // Return the employee with a temporary password for the assoiated user account
@@ -101,7 +102,7 @@ class EmployeeService
             // Update the employee with only the submitted fields.
             $employee->update($data);
 
-            return $employee->refresh()->load('user');
+            return $employee->refresh()->load('user')->load('department');
         });
     }
 
