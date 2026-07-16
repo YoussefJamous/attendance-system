@@ -7,11 +7,19 @@ enum Permission: string
     // Employee Profile
     case PROFILE_VIEW = 'profile.view';
     case PROFILE_UPDATE = 'profile.update';
+
+        // Employee
     case EMPLOYEES_VIEW = 'employees.view';
     case EMPLOYEES_CREATE = 'employees.create';
     case EMPLOYEES_UPDATE = 'employees.update';
     case EMPLOYEES_DELETE = 'employees.delete';
     case EMPLOYEES_RSTORE = 'employees.restore';
+
+        // Department
+    case DEPARTMENTS_VIEW = 'departments.view';
+    case DEPARTMENTS_CREATE = 'departments.create';
+    case DEPARTMENTS_UPDATE = 'departments.update';
+    case DEPARTMENTS_DELETE = 'departments.delete';
 
     // Attendance
     /* case ATTENDANCE_VIEW = 'attendance.view';

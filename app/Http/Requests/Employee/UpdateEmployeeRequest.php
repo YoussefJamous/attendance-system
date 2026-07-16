@@ -28,6 +28,7 @@ class UpdateEmployeeRequest extends FormRequest
             'identity_document' => ['sometimes', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:ok2048'],
             'status' => ['sometimes', new Enum(EmployeeStatus::class)],
             'gender' => ['sometimes', new Enum(Gender::class)],
+            'department_id' => ['sometimes', 'nullable', Rule::exists('departments', 'id')]
         ];
     }
 

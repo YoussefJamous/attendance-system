@@ -1,0 +1,27 @@
+info:
+  name: Create Department
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}departments"
+  body:
+    type: multipart-form
+    data:
+      - name: name
+        type: text
+        value: test department
+      - name: code
+        type: text
+        value: td
+      - name: description
+        type: text
+        value: test description to test the store method
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

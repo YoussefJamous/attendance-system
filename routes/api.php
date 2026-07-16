@@ -26,5 +26,8 @@ Route::prefix('v1')->group(function () {
             Route::patch('restore/{employee}', 'restore')->withTrashed();
             // Route::delete('force/{employee}', 'forceDelete')->withTrashed();
         });
+
+        // Department Routes
+        Route::apiResource('departments', V1\DepartmentController::class);
     });
 });

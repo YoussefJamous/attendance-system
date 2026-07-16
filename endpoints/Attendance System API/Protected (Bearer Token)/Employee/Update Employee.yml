@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{baseUrl}}employees/019f6003-7e5b-714c-865d-3f9f971ec9ee"
+  url: "{{baseUrl}}employees/019f69fc-3a8a-73e5-a055-db659e11ff5f"
   body:
     type: multipart-form
     data:

@@ -17,10 +17,10 @@ http:
         value: Bint Ahmed
       - name: email
         type: text
-        value: zaf2@eagledigital.my
+        value: zafa2@eagledigital.my
       - name: phone
         type: text
-        value: "+601169762667"
+        value: "+601169762668"
       - name: address
         type: text
         value: Malaysia, KL, Ampang, Street number 5
@@ -39,6 +39,9 @@ http:
         type: text
         value: inactive
         disabled: true
+      - name: department_id
+        type: text
+        value: 019f69fb-18c3-7011-97df-d26fcc45d5bd
   auth: inherit
 
 settings:

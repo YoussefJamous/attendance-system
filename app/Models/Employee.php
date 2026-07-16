@@ -16,6 +16,7 @@ class Employee extends Model
 
     protected $fillable = [
         'user_id',
+        'department_id',
         'first_name',
         'last_name',
         'phone',
@@ -38,6 +39,11 @@ class Employee extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 
     public function fullName(): string

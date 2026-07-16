@@ -5,15 +5,16 @@
 - [x] Project Setup
 - [x] Project Architecture
 - [x] Infrastructure
+- [x] Authorization
+- [x] Employee Management
+- [x] Department Management
 
 ## In Progress
 
 - [ ] Authentication
-- [ ] Authorization
 
 ## Planned
 
-- [ ] Employee Management
 - [ ] Attendance
 - [ ] Leave Management
 - [ ] Attendance Corrections
