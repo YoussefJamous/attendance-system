@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Imports\HolidayImport;
 use App\Models\Holiday;
+use App\Pipelines\Holiday\MonthFilterPipeline;
 use Carbon\CarbonInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +23,14 @@ class HolidayService
 {
     public function index(array $filters, int $perPage): LengthAwarePaginator
     {
-        return Holiday::query()
+        $query = app(Pipeline::class)
+            ->send(Holiday::query())
+            ->through([
+                new MonthFilterPipeline($filters['month'] ?? null),
+            ])
+            ->thenReturn();
+
+        return $query
             ->orderBy('start_date')
             ->paginate($perPage)
             ->appends($filters);
@@ -89,7 +98,13 @@ class HolidayService
             ->values()
             ->filter(fn (Collection $row) => $row->filter()->isNotEmpty())
             ->map(function (Collection $row, int $index) use (&$errors) {
-                $validator = Validator::make($row->toArray(), [
+                $data = $row->toArray();
+
+                if (blank($data['end_date'] ?? null)) {
+                    $data['end_date'] = $data['start_date'] ?? null;
+                }
+
+                $validator = Validator::make($data, [
                     'name' => ['required', 'string', 'max:255'],
                     'description' => ['nullable', 'string'],
                     'start_date' => ['required', 'date_format:Y-m-d'],

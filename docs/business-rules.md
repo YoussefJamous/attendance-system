@@ -59,5 +59,6 @@ Attendance rules are documented separately in `attendance-design.md`.
 
 - HR manages holidays.
 - A holiday is defined by a name, optional description, and date range.
+- When no end date is provided, the holiday ends on its start date.
 - Holiday date ranges may overlap.
 - Holiday attendance does not automatically create approved overtime.

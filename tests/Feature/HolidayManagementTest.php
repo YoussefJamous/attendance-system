@@ -41,6 +41,21 @@ class HolidayManagementTest extends TestCase
         $this->assertDatabaseCount('holidays', 2);
     }
 
+    public function test_holiday_defaults_end_date_to_start_date_when_it_is_omitted(): void
+    {
+        $user = $this->userWithPermission(Permission::HOLIDAYS_CREATE);
+
+        $response = $this->actingAs($user)->postJson('/api/v1/holidays', [
+            'name' => 'National Day',
+            'start_date' => '2026-08-31',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.start_date', '2026-08-31')
+            ->assertJsonPath('data.end_date', '2026-08-31');
+    }
+
     public function test_holiday_end_date_cannot_be_before_start_date(): void
     {
         $user = $this->userWithPermission(Permission::HOLIDAYS_CREATE);
@@ -100,7 +115,7 @@ class HolidayManagementTest extends TestCase
         $response = $this->actingAs($user)->post('/api/v1/holidays/import', [
             'file' => $this->holidayImportFile([
                 ['National Day', 'Public holiday.', '2026-08-31', '2026-08-31'],
-                ['Company Break', null, '2026-12-24', '2026-12-31'],
+                ['Company Break', null, '2026-12-24', null],
             ]),
         ]);
 
@@ -109,7 +124,32 @@ class HolidayManagementTest extends TestCase
             ->assertJsonPath('data.imported', 2);
 
         $this->assertDatabaseHas('holidays', ['name' => 'National Day']);
-        $this->assertDatabaseHas('holidays', ['name' => 'Company Break']);
+        $holiday = Holiday::where('name', 'Company Break')->firstOrFail();
+
+        $this->assertSame('2026-12-24', $holiday->start_date->toDateString());
+        $this->assertSame('2026-12-24', $holiday->end_date->toDateString());
+    }
+
+    public function test_holidays_can_be_filtered_by_an_overlapping_month(): void
+    {
+        Holiday::create([
+            'name' => 'Year End Closure',
+            'start_date' => '2026-12-24',
+            'end_date' => '2027-01-02',
+        ]);
+        Holiday::create([
+            'name' => 'National Day',
+            'start_date' => '2026-08-31',
+            'end_date' => '2026-08-31',
+        ]);
+        $user = $this->userWithPermission(Permission::HOLIDAYS_VIEW);
+
+        $response = $this->actingAs($user)->getJson('/api/v1/holidays?month=2027-01');
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data.holidays')
+            ->assertJsonPath('data.holidays.0.name', 'Year End Closure');
     }
 
     public function test_holiday_import_rejects_an_unreadable_excel_file(): void

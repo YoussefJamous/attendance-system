@@ -1,0 +1,21 @@
+info:
+  name: Import Holidays
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}holidays/import"
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value: C:\Development\attendance-system\resources\templates\holiday-import-template.xlsx
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

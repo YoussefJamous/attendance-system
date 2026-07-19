@@ -1,0 +1,27 @@
+info:
+  name: Create Single-Day Holiday
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}holidays"
+  body:
+    type: multipart-form
+    data:
+      - name: name
+        type: text
+        value: Company Anniversary
+      - name: description
+        type: text
+        value: Annual company holiday
+      - name: start_date
+        type: text
+        value: 2026-09-15
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

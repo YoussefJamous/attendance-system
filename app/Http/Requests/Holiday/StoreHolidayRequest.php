@@ -6,6 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreHolidayRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->filled('end_date')) {
+            $this->merge(['end_date' => $this->input('start_date')]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;

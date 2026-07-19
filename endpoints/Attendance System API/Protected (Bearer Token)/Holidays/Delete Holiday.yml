@@ -1,0 +1,15 @@
+info:
+  name: Delete Holiday
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}holidays/{{holidayId}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

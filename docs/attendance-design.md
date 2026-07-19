@@ -171,7 +171,7 @@ Holidays may be created:
 - Individually.
 - Through bulk Excel import.
 
-Each holiday stores a name, optional description, start date, and end date. Holiday ranges may overlap.
+Each holiday stores a name, optional description, start date, and end date. When the end date is omitted, it defaults to the start date. Holiday ranges may overlap.
 
 The import template uses the columns: `name`, `description`, `start_date`, and `end_date`.
 
