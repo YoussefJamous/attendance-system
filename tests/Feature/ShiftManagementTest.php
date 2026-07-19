@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\Enums\Permission;
+use App\Enums\Role;
 use App\Models\Employee;
 use App\Models\Shift;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission as SpatiePermission;
+use Spatie\Permission\Models\Role as SpatieRole;
 use Tests\TestCase;
 
 class ShiftManagementTest extends TestCase
@@ -43,21 +45,41 @@ class ShiftManagementTest extends TestCase
         $this->assertDatabaseCount('shift_days', 2);
     }
 
-    public function test_shift_days_require_unique_weekdays_and_valid_schedule_times(): void
+    public function test_authorized_user_can_create_an_employee_without_a_shift(): void
+    {
+        $user = $this->userWithPermission(Permission::EMPLOYEES_CREATE);
+        SpatieRole::findOrCreate(Role::EMPLOYEE->value, 'web');
+
+        $response = $this->actingAs($user)->postJson('/api/v1/employees', [
+            'first_name' => 'Amina',
+            'last_name' => 'Rahman',
+            'email' => 'amina.rahman@example.com',
+            'gender' => 'female',
+        ]);
+
+        $response->assertCreated();
+
+        $this->assertDatabaseHas('employees', [
+            'first_name' => 'Amina',
+            'last_name' => 'Rahman',
+            'shift_id' => null,
+        ]);
+    }
+
+    public function test_shift_days_require_unique_weekdays(): void
     {
         $user = $this->userWithPermission(Permission::SHIFTS_CREATE);
         $data = $this->shiftData();
         $data['days'][1]['day_of_week'] = 'monday';
-        $data['days'][0]['work_end_time'] = '08:00';
 
         $response = $this->actingAs($user)->postJson('/api/v1/shifts', $data);
 
         $response
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['days.0.work_end_time', 'days.1.day_of_week']);
+            ->assertJsonValidationErrors(['days.1.day_of_week']);
     }
 
-    public function test_shift_supports_overnight_days(): void
+    public function test_shift_allows_an_overnight_schedule_without_extra_configuration(): void
     {
         $user = $this->userWithPermission(Permission::SHIFTS_CREATE);
         $data = $this->shiftData();
@@ -65,7 +87,6 @@ class ShiftManagementTest extends TestCase
             'day_of_week' => 'friday',
             'work_start_time' => '22:00',
             'work_end_time' => '06:00',
-            'ends_next_day' => true,
             'break_duration_minutes' => 60,
         ]];
 
@@ -73,7 +94,6 @@ class ShiftManagementTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonPath('data.days.0.ends_next_day', true)
             ->assertJsonPath('data.days.0.work_end_time', '06:00');
     }
 
@@ -85,7 +105,6 @@ class ShiftManagementTest extends TestCase
             'day_of_week' => 'sunday',
             'work_start_time' => '09:00',
             'work_end_time' => '18:00',
-            'ends_next_day' => false,
             'break_duration_minutes' => 30,
         ]);
 
@@ -147,14 +166,12 @@ class ShiftManagementTest extends TestCase
                     'day_of_week' => 'monday',
                     'work_start_time' => '09:00',
                     'work_end_time' => '18:00',
-                    'ends_next_day' => false,
                     'break_duration_minutes' => 60,
                 ],
                 [
                     'day_of_week' => 'friday',
                     'work_start_time' => '09:00',
                     'work_end_time' => '18:00',
-                    'ends_next_day' => false,
                     'break_duration_minutes' => 90,
                 ],
             ],

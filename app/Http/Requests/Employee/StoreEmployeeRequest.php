@@ -28,7 +28,7 @@ class StoreEmployeeRequest extends FormRequest
             'status' => ['sometime', new Enum(EmployeeStatus::class)],
             'gender' => ['required', new Enum(Gender::class)],
             'department_id' => ['sometimes', 'nullable', Rule::exists('departments', 'id')],
-            'shift_id' => ['required', Rule::exists('shifts', 'id')],
+            'shift_id' => ['sometimes', 'nullable', Rule::exists('shifts', 'id')],
         ];
     }
 }

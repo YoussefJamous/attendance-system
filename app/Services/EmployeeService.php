@@ -56,13 +56,13 @@ class EmployeeService
             // Create the submitted employee
             $employeeData = [
                 'user_id' => $user->id,
-                'department_id' => $data['department_id'],
-                'shift_id' => $data['shift_id'],
+                'department_id' => $data['department_id'] ?? null,
+                'shift_id' => $data['shift_id'] ?? null,
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'phone' => $data['phone'],
-                'address' => $data['address'],
-                'hire_date' => $data['hire_date'],
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
+                'hire_date' => $data['hire_date'] ?? null,
                 'gender' => $data['gender'],
                 'identity_document_path' => $documentPath,
                 ...isset($data['status']) ? ['status' => $data['status']] : [],

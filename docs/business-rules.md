@@ -45,9 +45,10 @@ Attendance rules are documented separately in `attendance-design.md`.
 
 ## Shifts
 
-- Every employee belongs to exactly one shift.
+- Employees may be created without a shift assignment.
+- Employees require a shift assignment before they can use attendance endpoints.
 - A shift contains one or more shift days.
 - A shift can have only one schedule for each weekday.
 - Each shift day defines its working hours and total break duration.
-- Overnight shift days are supported.
+- Version 1 does not apply special validation or calculation rules to overnight schedules.
 - A shift assigned to employees cannot be deleted.

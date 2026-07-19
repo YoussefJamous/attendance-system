@@ -23,7 +23,6 @@ class ShiftSeeder extends Seeder
                 [
                     'work_start_time' => '09:00',
                     'work_end_time' => '18:00',
-                    'ends_next_day' => false,
                     'break_duration_minutes' => 60,
                 ]
             );
@@ -34,7 +33,6 @@ class ShiftSeeder extends Seeder
             [
                 'work_start_time' => '09:00',
                 'work_end_time' => '18:00',
-                'ends_next_day' => false,
                 'break_duration_minutes' => 90,
             ]
         );

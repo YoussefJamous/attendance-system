@@ -29,7 +29,7 @@ class UpdateEmployeeRequest extends FormRequest
             'status' => ['sometimes', new Enum(EmployeeStatus::class)],
             'gender' => ['sometimes', new Enum(Gender::class)],
             'department_id' => ['sometimes', 'nullable', Rule::exists('departments', 'id')],
-            'shift_id' => ['sometimes', Rule::exists('shifts', 'id')],
+            'shift_id' => ['sometimes', 'nullable', Rule::exists('shifts', 'id')],
         ];
     }
 

@@ -10,6 +10,8 @@ Attendance supports multiple clock-in and clock-out actions during the same day,
 
 Working hours are calculated from attendance logs rather than fixed clock-in and clock-out columns.
 
+Employees may be created before a shift is assigned. A shift assignment will be required before an employee can use attendance endpoints when Attendance Tracking is implemented.
+
 ---
 
 ## Attendance Record
@@ -19,8 +21,6 @@ Working hours are calculated from attendance logs rather than fixed clock-in and
 - Attendance represents the daily attendance summary.
 - Attendance does not store clock-in or clock-out timestamps directly.
 - Attendance logs contain all attendance actions.
-- Version 1 supports day shifts only.
-- If an attendance spans midnight, it belongs to the clock-in date.
 
 ---
 
@@ -131,7 +131,9 @@ The following settings must be configured before attendance endpoints become ava
 - Working days
 - Attendance methods
 
-Attendance endpoints are protected by middleware that verifies the attendance configuration has been completed.
+Working hours and working days are configured through Shift Days. Each Shift Day defines one weekday's start time, end time, and total break duration.
+
+When Attendance Tracking is implemented, attendance endpoints will verify that the employee has an assigned shift before allowing attendance actions.
 
 ---
 
@@ -150,7 +152,7 @@ The allowed attendance methods are configured by HR.
 
 ## Working Days
 
-Working days are configured by HR.
+Working days are configured by HR through Shift Days.
 
 Attendance is expected only on configured working days.
 
@@ -228,7 +230,7 @@ Monthly scheduled job:
 The following features are outside Version 1:
 
 - QR Code attendance.
-- Overnight shifts.
+- Overnight shift calculations and validation.
 - Employee number integration.
 - Automatic overtime approval.
 - Automatic attendance correction.

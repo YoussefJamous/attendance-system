@@ -548,7 +548,7 @@ Accepted
 
 ## Decision
 
-Each shift will contain one or more Shift Day records. A Shift Day stores a single weekday's working hours, total break duration, and whether it ends on the following day.
+Each shift will contain one or more Shift Day records. A Shift Day stores a single weekday's working hours and total break duration.
 
 ## Reason
 
@@ -569,7 +569,7 @@ Shift create and update operations manage the complete Shift Day aggregate. Vers
 
 ## Title
 
-Overnight Shift Day Representation
+Version 1 Defers Overnight Shift Handling
 
 ## Status
 
@@ -577,17 +577,17 @@ Accepted
 
 ## Decision
 
-Shift Days will use an `ends_next_day` boolean to explicitly represent overnight schedules.
+Version 1 will store Shift Day start and end times without interpreting or validating overnight schedules.
 
 ## Reason
 
-Time values alone do not clearly express whether a schedule crosses midnight. The explicit flag provides deterministic validation and future attendance calculations.
+Attendance calculations have not been implemented yet. Deferring overnight-specific behavior keeps Shift Management focused on HR schedule configuration and avoids premature domain rules.
 
 ## Alternatives Considered
 
-- Infer overnight schedules only when the end time is earlier than the start time.
-- Do not support overnight schedules in Version 1.
+- Add an explicit `ends_next_day` field and validate time ordering.
+- Reject schedules where the end time is earlier than the start time.
 
 ## Impact
 
-For same-day schedules, the end time must be after the start time. For overnight schedules, the end time must be earlier than the start time and `ends_next_day` must be true.
+Shift Management accepts valid time values in either order. Overnight calculation and validation rules will be introduced with Attendance Tracking when they are needed.

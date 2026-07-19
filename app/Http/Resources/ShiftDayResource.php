@@ -14,7 +14,6 @@ class ShiftDayResource extends JsonResource
             'day_of_week' => $this->day_of_week->value,
             'work_start_time' => $this->work_start_time,
             'work_end_time' => $this->work_end_time,
-            'ends_next_day' => $this->ends_next_day,
             'break_duration_minutes' => $this->break_duration_minutes,
         ];
     }

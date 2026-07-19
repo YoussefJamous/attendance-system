@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->foreignUuid('department_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('shift_id')->nullable()->constrained()->restrictOnDelete();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('phone')->nullable()->unique();

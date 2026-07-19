@@ -15,7 +15,6 @@ class ShiftDay extends Model
         'day_of_week',
         'work_start_time',
         'work_end_time',
-        'ends_next_day',
         'break_duration_minutes',
     ];
 
@@ -23,7 +22,6 @@ class ShiftDay extends Model
     {
         return [
             'day_of_week' => DayOfWeek::class,
-            'ends_next_day' => 'boolean',
         ];
     }
 
