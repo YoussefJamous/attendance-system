@@ -33,6 +33,10 @@ enum Permission: string
     case HOLIDAYS_UPDATE = 'holidays.update';
     case HOLIDAYS_DELETE = 'holidays.delete';
 
+    // System Configuration
+    case SYSTEM_CONFIGURATION_VIEW = 'system-configuration.view';
+    case SYSTEM_CONFIGURATION_MANAGE = 'system-configuration.manage';
+
     // Attendance
     /* case ATTENDANCE_VIEW = 'attendance.view';
     case ATTENDANCE_CHECK_IN = 'attendance.checkin';

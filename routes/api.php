@@ -39,5 +39,15 @@ Route::prefix('v1')->group(function () {
             Route::post('import', 'import');
         });
         Route::apiResource('holidays', V1\HolidayController::class);
+
+        // System Configuration Routes
+        Route::get('system-configuration', [V1\SystemConfigurationController::class, 'show']);
+        Route::put('system-configuration', [V1\SystemConfigurationController::class, 'update']);
+
+        // Attendance Routes
+        Route::middleware('attendance.configured')->prefix('attendance')->controller(V1\AttendanceController::class)->group(function () {
+            Route::post('clock-in', 'clockIn');
+            Route::post('clock-out', 'clockOut');
+        });
     });
 });

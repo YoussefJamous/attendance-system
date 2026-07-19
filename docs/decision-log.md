@@ -651,3 +651,63 @@ The Laravel-native package provides reliable workbook parsing without a custom s
 ## Impact
 
 Holiday imports accept `.xlsx` files with `name`, `description`, `start_date`, and `end_date` columns. Each row is validated before the import transaction creates any holidays.
+
+---
+
+# ADR-021
+
+## Title
+
+Global Attendance Configuration
+
+## Status
+
+Accepted
+
+## Decision
+
+HR will manage one global attendance configuration containing one attendance method, minimum time between attendance actions, and grace minutes.
+
+## Reason
+
+Version 1 needs a small, explicit prerequisite before employees can record attendance. Shift Days already own working schedules, so schedule fields do not belong in global configuration.
+
+## Alternatives Considered
+
+- Store configuration per employee.
+- Store configuration per shift.
+- Allow attendance actions without a configuration prerequisite.
+
+## Impact
+
+Attendance endpoints are blocked until the configuration exists. The selected attendance method is stored but not validated until method-specific evidence rules are designed.
+
+---
+
+# ADR-022
+
+## Title
+
+Attendance Action Evidence
+
+## Status
+
+Accepted
+
+## Decision
+
+Every clock-in and clock-out action will use a server-generated timestamp and require a private image upload.
+
+## Reason
+
+Server timestamps prevent clients from choosing attendance times. Required private image evidence preserves proof for later HR review without exposing files through public storage.
+
+## Alternatives Considered
+
+- Accept timestamps from the client.
+- Make action images optional.
+- Store action images on the public filesystem disk.
+
+## Impact
+
+Attendance logs store an action, occurrence timestamp, and private image path. Direct image review endpoints can be added later when HR attendance review is implemented.

@@ -43,6 +43,17 @@ Holiday
 - Named date range when normal work is not expected
 - Optional description, start date, and end date
 
+System Configuration
+- Global attendance method, minimum action interval, and grace minutes
+
+Attendance
+- Daily attendance summary for one employee
+- Attendance date and status
+
+Attendance Log
+- Clock-in or clock-out action belonging to one Attendance
+- Server timestamp and private image path
+
 ## Relationships
 
 User (1) ------ (1) Employee
@@ -53,6 +64,10 @@ Shift (1) ------ (*) Shift Day
 
 Shift (1) ------ (*) Employee
 
+Employee (1) ------ (*) Attendance
+
+Attendance (1) ------ (*) Attendance Log
+
 ## Constraints
 
 - `employees.user_id` is unique and references `users.id`.
@@ -61,3 +76,5 @@ Shift (1) ------ (*) Employee
 - `shift_days` has a unique constraint on `(shift_id, day_of_week)`.
 - `employees.shift_id` is nullable and references `shifts.id`; assigned shifts cannot be deleted.
 - Holiday date ranges are independent records and may overlap.
+- `attendances` has a unique constraint on `(employee_id, attendance_date)`.
+- `attendance_logs.attendance_id` references `attendances.id` and cascades on deletion.

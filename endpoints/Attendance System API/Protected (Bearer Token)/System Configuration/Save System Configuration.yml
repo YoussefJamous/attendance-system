@@ -1,0 +1,27 @@
+info:
+  name: Save System Configuration
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{baseUrl}}system-configuration"
+  body:
+    type: multipart-form
+    data:
+      - name: attendance_method
+        type: text
+        value: gps
+      - name: minimum_action_interval_minutes
+        type: text
+        value: "1"
+      - name: grace_minutes
+        type: text
+        value: "0"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

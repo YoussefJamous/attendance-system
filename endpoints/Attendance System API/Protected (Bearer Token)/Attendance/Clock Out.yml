@@ -1,0 +1,21 @@
+info:
+  name: Clock Out
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}attendance/clock-out"
+  body:
+    type: multipart-form
+    data:
+      - name: image
+        type: file
+        value: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

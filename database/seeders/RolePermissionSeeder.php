@@ -35,6 +35,8 @@ class RolePermissionSeeder extends Seeder
             Permission::HOLIDAYS_CREATE->value,
             Permission::HOLIDAYS_UPDATE->value,
             Permission::HOLIDAYS_DELETE->value,
+            Permission::SYSTEM_CONFIGURATION_VIEW->value,
+            Permission::SYSTEM_CONFIGURATION_MANAGE->value,
         ]);
 
         $employee->syncPermissions([
