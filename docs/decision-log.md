@@ -696,7 +696,7 @@ Accepted
 
 ## Decision
 
-Every clock-in and clock-out action will use its server-managed `created_at` timestamp and require a private image upload.
+Every direct clock-in and clock-out action will use its server-managed `created_at` timestamp and require a private image upload.
 
 ## Reason
 
@@ -710,4 +710,34 @@ Server-managed timestamps prevent clients from choosing attendance times. Requir
 
 ## Impact
 
-Attendance logs store an action, server-managed creation timestamp, and private image path. Direct image review endpoints can be added later when HR attendance review is implemented.
+Attendance logs store an action, server-managed creation timestamp, and private image path. HR-approved correction logs may have no image because correction submissions do not require one. Direct image review endpoints can be added later when HR attendance review is implemented.
+
+---
+
+# ADR-023
+
+## Title
+
+Full Timeline Attendance Corrections
+
+## Status
+
+Accepted
+
+## Decision
+
+Attendance corrections will store an employee's complete proposed timeline for one attendance date as separate correction log rows. The proposal remains separate from attendance logs until HR approves it.
+
+## Reason
+
+A complete timeline lets the system validate sequence and configured gaps consistently, including when several actions need correction. Keeping the proposal separate preserves the original attendance evidence until HR makes a decision.
+
+## Alternatives Considered
+
+- Allow employees to edit attendance logs directly.
+- Create one correction request for each changed action.
+- Apply the proposed logs before HR review.
+
+## Impact
+
+Employees submit a note and a full action array without correction images. At most one pending correction exists for an employee and date. Approval atomically replaces that day's attendance logs; rejection leaves them unchanged.

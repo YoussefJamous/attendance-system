@@ -37,6 +37,8 @@ class RolePermissionSeeder extends Seeder
             Permission::HOLIDAYS_DELETE->value,
             Permission::SYSTEM_CONFIGURATION_VIEW->value,
             Permission::SYSTEM_CONFIGURATION_MANAGE->value,
+            Permission::ATTENDANCE_CORRECTIONS_VIEW->value,
+            Permission::ATTENDANCE_CORRECTIONS_MANAGE->value,
         ]);
 
         $employee->syncPermissions([
@@ -45,6 +47,8 @@ class RolePermissionSeeder extends Seeder
             Permission::DEPARTMENTS_VIEW->value,
             Permission::ATTENDANCE_CLOCK_IN->value,
             Permission::ATTENDANCE_CLOCK_OUT->value,
+            Permission::ATTENDANCE_CORRECTIONS_VIEW->value,
+            Permission::ATTENDANCE_CORRECTIONS_CREATE->value,
         ]);
     }
 }

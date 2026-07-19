@@ -58,6 +58,11 @@ class Employee extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function attendanceCorrections(): HasMany
+    {
+        return $this->hasMany(AttendanceCorrection::class);
+    }
+
     public function fullName(): string
     {
         return trim("{$this->first_name} {$this->last_name}");

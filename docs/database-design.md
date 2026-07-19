@@ -52,7 +52,15 @@ Attendance
 
 Attendance Log
 - Clock-in or clock-out action belonging to one Attendance
-- Server-managed `created_at` timestamp and private image path
+- Server-managed `created_at` timestamp and nullable private image path
+
+Attendance Correction
+- Employee's proposed complete attendance timeline for one date
+- Note and pending, approved, or rejected status
+
+Attendance Correction Log
+- Proposed clock-in or clock-out action belonging to one Attendance Correction
+- Requested action timestamp
 
 ## Relationships
 
@@ -68,6 +76,10 @@ Employee (1) ------ (*) Attendance
 
 Attendance (1) ------ (*) Attendance Log
 
+Employee (1) ------ (*) Attendance Correction
+
+Attendance Correction (1) ------ (*) Attendance Correction Log
+
 ## Constraints
 
 - `employees.user_id` is unique and references `users.id`.
@@ -78,3 +90,5 @@ Attendance (1) ------ (*) Attendance Log
 - Holiday date ranges are independent records and may overlap.
 - `attendances` has a unique constraint on `(employee_id, attendance_date)`.
 - `attendance_logs.attendance_id` references `attendances.id` and cascades on deletion.
+- `attendance_corrections.employee_id` references `employees.id`.
+- `attendance_correction_logs.attendance_correction_id` references `attendance_corrections.id` and cascades on deletion.

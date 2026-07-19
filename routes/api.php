@@ -49,5 +49,14 @@ Route::prefix('v1')->group(function () {
             Route::post('clock-in', 'clockIn');
             Route::post('clock-out', 'clockOut');
         });
+
+        // Attendance Correction Routes
+        Route::middleware('attendance.configured')->prefix('attendance-corrections')->controller(V1\AttendanceCorrectionController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('{attendanceCorrection}', 'show');
+            Route::patch('{attendanceCorrection}/approve', 'approve');
+            Route::patch('{attendanceCorrection}/reject', 'reject');
+        });
     });
 });

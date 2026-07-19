@@ -40,6 +40,9 @@ enum Permission: string
     // Attendance
     case ATTENDANCE_CLOCK_IN = 'attendance.clock-in';
     case ATTENDANCE_CLOCK_OUT = 'attendance.clock-out';
+    case ATTENDANCE_CORRECTIONS_VIEW = 'attendance-corrections.view';
+    case ATTENDANCE_CORRECTIONS_CREATE = 'attendance-corrections.create';
+    case ATTENDANCE_CORRECTIONS_MANAGE = 'attendance-corrections.manage';
 
     /* case ATTENDANCE_VIEW = 'attendance.view';
 

@@ -44,11 +44,14 @@ Attendance rules are documented separately in `attendance-design.md`.
 - HR must create the global attendance configuration before employees can clock in or out.
 - Employees require an assigned shift before they can clock in or out.
 - Clock-in and clock-out actions use their server-managed `created_at` timestamp.
-- Every clock-in and clock-out action requires an image.
+- Direct clock-in and clock-out actions require an image; correction timelines do not.
 - Attendance actions must alternate between clock-in and clock-out.
 - Employees require the corresponding clock-in or clock-out permission.
 - Consecutive attendance actions must respect the configured minimum interval.
 - The configured attendance method is not validated in Version 1.
+- Employees submit one complete proposed timeline and a note for each correction request.
+- A pending correction does not alter attendance logs; only HR approval replaces that day's logs.
+- An employee may have only one pending correction for the same attendance date.
 
 ---
 

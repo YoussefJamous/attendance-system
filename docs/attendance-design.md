@@ -205,12 +205,11 @@ Employees cannot modify attendance logs directly.
 
 Instead, they submit attendance correction requests.
 
-A correction request may:
+A correction request contains a note and the employee's complete proposed timeline for one attendance date. It may add, remove, or modify actions by replacing the proposed array, even when some proposed actions match the existing log.
 
-- Modify an existing attendance action.
-- Add a missing attendance action.
+Correction actions contain an action and requested timestamp. They do not require images.
 
-Before approval, the system reconstructs the complete attendance timeline and validates it using the attendance validation rules.
+The submitted timeline is validated using the attendance validation rules, including the configured minimum interval. A pending correction does not modify the existing attendance logs.
 
 Only approved correction requests update attendance logs.
 

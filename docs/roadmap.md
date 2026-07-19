@@ -18,8 +18,8 @@
 
 - [x] Shift Management
 - [x] Holiday Management
-- [ ] Attendance Tracking
-- [ ] Attendance Corrections
+- [x] Attendance Tracking
+- [x] Attendance Corrections
 - [ ] Overtime
 
 ## Planned

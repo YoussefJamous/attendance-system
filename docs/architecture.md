@@ -36,4 +36,5 @@ The project favors Laravel conventions over custom abstractions.
 - System Configuration defines global attendance settings managed by HR.
 - Attendance defines an employee's daily attendance summary.
 - Attendance Log defines a clock-in or clock-out action, timestamped by its server-managed `created_at` value, with image evidence.
-- Attendance Correction and Overtime will be added in later subdomains.
+- Attendance Correction stores a proposed full attendance timeline until HR approves or rejects it.
+- Overtime will be added in a later subdomain.
