@@ -12,7 +12,7 @@ class AttendanceLogResource extends JsonResource
         return [
             'id' => $this->id,
             'action' => $this->action->value,
-            'occurred_at' => $this->occurred_at->toISOString(),
+            'created_at' => $this->created_at->toISOString(),
             'image_path' => $this->image_path,
         ];
     }

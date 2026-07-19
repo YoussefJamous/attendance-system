@@ -696,11 +696,11 @@ Accepted
 
 ## Decision
 
-Every clock-in and clock-out action will use a server-generated timestamp and require a private image upload.
+Every clock-in and clock-out action will use its server-managed `created_at` timestamp and require a private image upload.
 
 ## Reason
 
-Server timestamps prevent clients from choosing attendance times. Required private image evidence preserves proof for later HR review without exposing files through public storage.
+Server-managed timestamps prevent clients from choosing attendance times. Required private image evidence preserves proof for later HR review without exposing files through public storage.
 
 ## Alternatives Considered
 
@@ -710,4 +710,4 @@ Server timestamps prevent clients from choosing attendance times. Required priva
 
 ## Impact
 
-Attendance logs store an action, occurrence timestamp, and private image path. Direct image review endpoints can be added later when HR attendance review is implemented.
+Attendance logs store an action, server-managed creation timestamp, and private image path. Direct image review endpoints can be added later when HR attendance review is implemented.

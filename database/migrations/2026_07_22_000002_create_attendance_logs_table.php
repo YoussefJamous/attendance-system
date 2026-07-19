@@ -13,7 +13,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('attendance_id')->constrained()->cascadeOnDelete();
             $table->enum('action', AttendanceAction::values());
-            $table->timestamp('occurred_at');
             $table->string('image_path');
             $table->timestamps();
         });

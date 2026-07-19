@@ -35,5 +35,5 @@ The project favors Laravel conventions over custom abstractions.
 - Holiday defines a date range when normal work is not expected.
 - System Configuration defines global attendance settings managed by HR.
 - Attendance defines an employee's daily attendance summary.
-- Attendance Log defines a server-timestamped clock-in or clock-out action with image evidence.
+- Attendance Log defines a clock-in or clock-out action, timestamped by its server-managed `created_at` value, with image evidence.
 - Attendance Correction and Overtime will be added in later subdomains.

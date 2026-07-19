@@ -21,15 +21,20 @@ class AttendanceService
             $employee = $this->attendanceEmployee($user);
             $now = now();
 
-            $attendance = Attendance::firstOrCreate(
-                [
+            $attendance = Attendance::query()
+                ->where('employee_id', $employee->id)
+                ->whereDate('attendance_date', $now->toDateString())
+                ->first();
+
+            if (! $attendance) {
+                $attendance = Attendance::create([
                     'employee_id' => $employee->id,
                     'attendance_date' => $now->toDateString(),
-                ],
-                ['status' => AttendanceStatus::INCOMPLETE],
-            );
+                    'status' => AttendanceStatus::INCOMPLETE,
+                ]);
+            }
 
-            $this->addLog($attendance, AttendanceAction::CLOCK_IN, $image, $now);
+            $this->addLog($attendance, AttendanceAction::CLOCK_IN, $image);
 
             return $attendance->load('logs');
         });
@@ -51,7 +56,7 @@ class AttendanceService
                 ]);
             }
 
-            $this->addLog($attendance, AttendanceAction::CLOCK_OUT, $image, $now);
+            $this->addLog($attendance, AttendanceAction::CLOCK_OUT, $image);
 
             return $attendance->load('logs');
         });
@@ -76,16 +81,15 @@ class AttendanceService
         return $employee;
     }
 
-    private function addLog(Attendance $attendance, AttendanceAction $action, UploadedFile $image, Carbon $now): void
+    private function addLog(Attendance $attendance, AttendanceAction $action, UploadedFile $image): void
     {
-        $lastLog = $attendance->logs()->latest('occurred_at')->first();
+        $lastLog = $attendance->logs()->latest('created_at')->first();
 
         $this->validateAction($lastLog?->action, $action);
-        $this->validateMinimumInterval($lastLog?->occurred_at, $now);
+        $this->validateMinimumInterval($lastLog?->created_at, now());
 
         $attendance->logs()->create([
             'action' => $action,
-            'occurred_at' => $now,
             'image_path' => $image->store('attendance/images', 'local'),
         ]);
     }
@@ -98,9 +102,17 @@ class AttendanceService
             ]);
         }
 
-        if ($lastAction === $action) {
+        if ($lastAction === null) {
+            return;
+        }
+
+        $expectedAction = $lastAction === AttendanceAction::CLOCK_IN
+            ? AttendanceAction::CLOCK_OUT
+            : AttendanceAction::CLOCK_IN;
+
+        if ($action !== $expectedAction) {
             throw ValidationException::withMessages([
-                'attendance' => ["A {$action->value} action cannot follow another {$action->value} action."],
+                'attendance' => ["A {$action->value} action must follow a {$expectedAction->value} action."],
             ]);
         }
     }

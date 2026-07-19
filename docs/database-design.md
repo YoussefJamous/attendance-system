@@ -52,7 +52,7 @@ Attendance
 
 Attendance Log
 - Clock-in or clock-out action belonging to one Attendance
-- Server timestamp and private image path
+- Server-managed `created_at` timestamp and private image path
 
 ## Relationships
 

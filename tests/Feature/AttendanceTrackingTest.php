@@ -74,7 +74,7 @@ class AttendanceTrackingTest extends TestCase
         $clockIn
             ->assertCreated()
             ->assertJsonPath('data.logs.0.action', 'clock_in')
-            ->assertJsonPath('data.logs.0.occurred_at', '2026-07-20T09:00:00.000000Z');
+            ->assertJsonPath('data.logs.0.created_at', '2026-07-20T09:00:00.000000Z');
 
         Carbon::setTestNow('2026-07-20 09:01:00');
         $clockOut = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
@@ -124,10 +124,60 @@ class AttendanceTrackingTest extends TestCase
             ->assertJsonValidationErrors(['attendance']);
     }
 
+    public function test_clock_in_must_follow_a_clock_out(): void
+    {
+        $user = $this->attendanceUser();
+        $this->createConfiguration();
+
+        Carbon::setTestNow('2026-07-20 09:00:00');
+        $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+            'image' => UploadedFile::fake()->image('clock-in.jpg'),
+        ])->assertCreated();
+
+        Carbon::setTestNow('2026-07-20 09:01:00');
+        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+            'image' => UploadedFile::fake()->image('second-clock-in.jpg'),
+        ]);
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['attendance']);
+    }
+
+    public function test_employee_requires_clock_in_permission(): void
+    {
+        $user = $this->attendanceUser(false);
+        $this->createConfiguration();
+
+        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+            'image' => UploadedFile::fake()->image('clock-in.jpg'),
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_employee_requires_clock_out_permission(): void
+    {
+        $user = $this->attendanceUser(false);
+        $this->createConfiguration();
+        $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
+
+        $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+            'image' => UploadedFile::fake()->image('clock-in.jpg'),
+        ])->assertCreated();
+
+        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
+            'image' => UploadedFile::fake()->image('clock-out.jpg'),
+        ]);
+
+        $response->assertForbidden();
+    }
+
     public function test_employee_requires_an_assigned_shift_to_record_attendance(): void
     {
         $user = User::factory()->create();
         Employee::factory()->for($user)->create();
+        $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
         $this->createConfiguration();
 
         $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
@@ -161,11 +211,16 @@ class AttendanceTrackingTest extends TestCase
         ]);
     }
 
-    private function attendanceUser(): User
+    private function attendanceUser(bool $withAttendancePermissions = true): User
     {
         $user = User::factory()->create();
         $shift = Shift::create(['name' => 'Attendance Shift']);
         Employee::factory()->for($user)->create(['shift_id' => $shift->id]);
+
+        if ($withAttendancePermissions) {
+            $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
+            $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_OUT);
+        }
 
         return $user;
     }
@@ -173,9 +228,14 @@ class AttendanceTrackingTest extends TestCase
     private function userWithPermission(Permission $permission): User
     {
         $user = User::factory()->create();
-        SpatiePermission::findOrCreate($permission->value, 'web');
-        $user->givePermissionTo($permission->value);
+        $this->grantPermission($user, $permission);
 
         return $user;
+    }
+
+    private function grantPermission(User $user, Permission $permission): void
+    {
+        SpatiePermission::findOrCreate($permission->value, 'web');
+        $user->givePermissionTo($permission->value);
     }
 }

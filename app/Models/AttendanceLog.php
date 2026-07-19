@@ -14,7 +14,6 @@ class AttendanceLog extends Model
     protected $fillable = [
         'attendance_id',
         'action',
-        'occurred_at',
         'image_path',
     ];
 
@@ -22,7 +21,6 @@ class AttendanceLog extends Model
     {
         return [
             'action' => AttendanceAction::class,
-            'occurred_at' => 'datetime',
         ];
     }
 

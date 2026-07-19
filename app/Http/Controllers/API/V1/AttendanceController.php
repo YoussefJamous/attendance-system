@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\ApiController;
 use App\Http\Requests\Attendance\ClockAttendanceRequest;
 use App\Http\Resources\AttendanceResource;
+use App\Models\Attendance;
 use App\Services\AttendanceService;
 use Illuminate\Http\JsonResponse;
 
@@ -14,6 +15,8 @@ class AttendanceController extends ApiController
 
     public function clockIn(ClockAttendanceRequest $request): JsonResponse
     {
+        $this->authorize('clockIn', Attendance::class);
+
         $attendance = $this->attendanceService->clockIn($request->user(), $request->file('image'));
 
         return $this->success(
@@ -25,6 +28,8 @@ class AttendanceController extends ApiController
 
     public function clockOut(ClockAttendanceRequest $request): JsonResponse
     {
+        $this->authorize('clockOut', Attendance::class);
+
         $attendance = $this->attendanceService->clockOut($request->user(), $request->file('image'));
 
         return $this->success(
