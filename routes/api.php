@@ -32,5 +32,12 @@ Route::prefix('v1')->group(function () {
 
         // Shift Routes
         Route::apiResource('shifts', V1\ShiftController::class);
+
+        // Holiday Routes
+        Route::prefix('holidays')->controller(V1\HolidayController::class)->group(function () {
+            Route::get('import-template', 'downloadTemplate');
+            Route::post('import', 'import');
+        });
+        Route::apiResource('holidays', V1\HolidayController::class);
     });
 });

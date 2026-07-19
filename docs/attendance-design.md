@@ -171,6 +171,10 @@ Holidays may be created:
 - Individually.
 - Through bulk Excel import.
 
+Each holiday stores a name, optional description, start date, and end date. Holiday ranges may overlap.
+
+The import template uses the columns: `name`, `description`, `start_date`, and `end_date`.
+
 Attendance during holidays does not automatically become approved overtime.
 
 ---

@@ -27,6 +27,12 @@ enum Permission: string
     case SHIFTS_UPDATE = 'shifts.update';
     case SHIFTS_DELETE = 'shifts.delete';
 
+    // Holiday
+    case HOLIDAYS_VIEW = 'holidays.view';
+    case HOLIDAYS_CREATE = 'holidays.create';
+    case HOLIDAYS_UPDATE = 'holidays.update';
+    case HOLIDAYS_DELETE = 'holidays.delete';
+
     // Attendance
     /* case ATTENDANCE_VIEW = 'attendance.view';
     case ATTENDANCE_CHECK_IN = 'attendance.checkin';

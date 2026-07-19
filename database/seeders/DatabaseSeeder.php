@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             DepartmentSeeder::class,
             ShiftSeeder::class,
+            HolidaySeeder::class,
             UserSeeder::class,
             EmployeeSeeder::class,
         ]);

@@ -12,13 +12,19 @@
 ## In Progress
 
 - [ ] Authentication
+- [ ] Attendance
+
+## Attendance Milestones
+
+- [x] Shift Management
+- [x] Holiday Management
+- [ ] Attendance Tracking
+- [ ] Attendance Corrections
+- [ ] Overtime
 
 ## Planned
 
-- [ ] Attendance
 - [ ] Leave Management
-- [ ] Attendance Corrections
-- [ ] Overtime
 - [ ] Reports
 - [ ] Notifications
 - [ ] Manager Module

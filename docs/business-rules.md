@@ -52,3 +52,12 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Each shift day defines its working hours and total break duration.
 - Version 1 does not apply special validation or calculation rules to overnight schedules.
 - A shift assigned to employees cannot be deleted.
+
+---
+
+## Holidays
+
+- HR manages holidays.
+- A holiday is defined by a name, optional description, and date range.
+- Holiday date ranges may overlap.
+- Holiday attendance does not automatically create approved overtime.

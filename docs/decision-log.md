@@ -591,3 +591,63 @@ Attendance calculations have not been implemented yet. Deferring overnight-speci
 ## Impact
 
 Shift Management accepts valid time values in either order. Overnight calculation and validation rules will be introduced with Attendance Tracking when they are needed.
+
+---
+
+# ADR-019
+
+## Title
+
+Holiday Date Range Model
+
+## Status
+
+Accepted
+
+## Decision
+
+Holidays will be stored as named date ranges with an optional description. Overlapping holiday ranges are allowed.
+
+## Reason
+
+Date ranges support both single-day and multi-day holidays without extra tables. Allowing overlaps avoids imposing business distinctions that Version 1 does not need.
+
+## Alternatives Considered
+
+- Store each holiday as a single date only.
+- Expand multi-day holidays into one record per day.
+- Reject overlapping holiday ranges.
+
+## Impact
+
+Attendance Tracking can use `HolidayService::isHoliday()` to determine whether a date is covered by any holiday range.
+
+---
+
+# ADR-020
+
+## Title
+
+Holiday Excel Import
+
+## Status
+
+Accepted
+
+## Decision
+
+Holiday imports will use the `maatwebsite/excel` package and a version-controlled `.xlsx` template.
+
+## Reason
+
+The Laravel-native package provides reliable workbook parsing without a custom spreadsheet parser. The template makes the required import columns explicit and can be downloaded through the API.
+
+## Alternatives Considered
+
+- Build a custom XLSX parser.
+- Accept CSV files only.
+- Require holidays to be created individually.
+
+## Impact
+
+Holiday imports accept `.xlsx` files with `name`, `description`, `start_date`, and `end_date` columns. Each row is validated before the import transaction creates any holidays.

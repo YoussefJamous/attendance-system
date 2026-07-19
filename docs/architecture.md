@@ -32,4 +32,5 @@ The project favors Laravel conventions over custom abstractions.
 
 - Shift defines an employee schedule.
 - Shift Day defines the schedule for one weekday within a shift.
-- Holiday, Attendance, Attendance Log, Attendance Correction, and Overtime will be added in later subdomains.
+- Holiday defines a date range when normal work is not expected.
+- Attendance, Attendance Log, Attendance Correction, and Overtime will be added in later subdomains.
