@@ -13,6 +13,7 @@ class EmployeeResource extends JsonResource
             'id' => $this->id,
             'user' => new UserResource($this->whenLoaded('user')),
             'department' => new DepartmentResource(($this->whenLoaded('department'))),
+            'shift' => new ShiftResource($this->whenLoaded('shift')),
             'name' => $this->fullName(),
             'phone' => $this->phone,
             'address' => $this->address,

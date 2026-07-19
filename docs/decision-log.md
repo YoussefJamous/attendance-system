@@ -533,3 +533,61 @@ Employees cannot register themselves. User account creation is part of the emplo
 ## Impact
 
 Employee creation becomes a transactional operation involving both the `employees` and `users` tables.
+
+---
+
+# ADR-017
+
+## Title
+
+Shift Schedules Use Shift Days
+
+## Status
+
+Accepted
+
+## Decision
+
+Each shift will contain one or more Shift Day records. A Shift Day stores a single weekday's working hours, total break duration, and whether it ends on the following day.
+
+## Reason
+
+Daily schedules can differ within the same shift. Dedicated records enforce one schedule per weekday and avoid storing working days as an unstructured JSON value.
+
+## Alternatives Considered
+
+- Store one start time, end time, and JSON working-days array on Shift.
+- Store individual break periods in a separate Shift Break table.
+
+## Impact
+
+Shift create and update operations manage the complete Shift Day aggregate. Version 1 stores only total daily break duration; detailed break periods can be added later without redesigning Shift.
+
+---
+
+# ADR-018
+
+## Title
+
+Overnight Shift Day Representation
+
+## Status
+
+Accepted
+
+## Decision
+
+Shift Days will use an `ends_next_day` boolean to explicitly represent overnight schedules.
+
+## Reason
+
+Time values alone do not clearly express whether a schedule crosses midnight. The explicit flag provides deterministic validation and future attendance calculations.
+
+## Alternatives Considered
+
+- Infer overnight schedules only when the end time is earlier than the start time.
+- Do not support overnight schedules in Version 1.
+
+## Impact
+
+For same-day schedules, the end time must be after the start time. For overnight schedules, the end time must be earlier than the start time and `ends_next_day` must be true.

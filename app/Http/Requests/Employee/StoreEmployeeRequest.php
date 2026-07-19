@@ -27,7 +27,8 @@ class StoreEmployeeRequest extends FormRequest
             'identity_document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
             'status' => ['sometime', new Enum(EmployeeStatus::class)],
             'gender' => ['required', new Enum(Gender::class)],
-            'department_id' => ['sometimes', 'nullable', Rule::exists('departments', 'id')]
+            'department_id' => ['sometimes', 'nullable', Rule::exists('departments', 'id')],
+            'shift_id' => ['required', Rule::exists('shifts', 'id')],
         ];
     }
 }

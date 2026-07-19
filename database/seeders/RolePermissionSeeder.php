@@ -6,7 +6,6 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role as SpatieRole;
-use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -28,6 +27,10 @@ class RolePermissionSeeder extends Seeder
             Permission::DEPARTMENTS_CREATE->value,
             Permission::DEPARTMENTS_UPDATE->value,
             Permission::DEPARTMENTS_DELETE->value,
+            Permission::SHIFTS_VIEW->value,
+            Permission::SHIFTS_CREATE->value,
+            Permission::SHIFTS_UPDATE->value,
+            Permission::SHIFTS_DELETE->value,
         ]);
 
         $employee->syncPermissions([

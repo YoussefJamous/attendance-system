@@ -8,18 +8,24 @@ enum Permission: string
     case PROFILE_VIEW = 'profile.view';
     case PROFILE_UPDATE = 'profile.update';
 
-        // Employee
+    // Employee
     case EMPLOYEES_VIEW = 'employees.view';
     case EMPLOYEES_CREATE = 'employees.create';
     case EMPLOYEES_UPDATE = 'employees.update';
     case EMPLOYEES_DELETE = 'employees.delete';
     case EMPLOYEES_RSTORE = 'employees.restore';
 
-        // Department
+    // Department
     case DEPARTMENTS_VIEW = 'departments.view';
     case DEPARTMENTS_CREATE = 'departments.create';
     case DEPARTMENTS_UPDATE = 'departments.update';
     case DEPARTMENTS_DELETE = 'departments.delete';
+
+    // Shift
+    case SHIFTS_VIEW = 'shifts.view';
+    case SHIFTS_CREATE = 'shifts.create';
+    case SHIFTS_UPDATE = 'shifts.update';
+    case SHIFTS_DELETE = 'shifts.delete';
 
     // Attendance
     /* case ATTENDANCE_VIEW = 'attendance.view';

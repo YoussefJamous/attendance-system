@@ -27,3 +27,9 @@ Resource
 - API exceptions are rendered using the standard API error response format.
 
 The project favors Laravel conventions over custom abstractions.
+
+## Attendance Domain
+
+- Shift defines an employee schedule.
+- Shift Day defines the schedule for one weekday within a shift.
+- Holiday, Attendance, Attendance Log, Attendance Correction, and Overtime will be added in later subdomains.

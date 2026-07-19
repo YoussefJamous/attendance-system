@@ -17,18 +17,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-
 class EmployeeService
 {
     public function index(array $filters, int $perPage): LengthAwarePaginator
     {
         $query = app(Pipeline::class)
-            ->send(Employee::query()->with('user')->with('department'))
+            ->send(Employee::query()->with(['user', 'department', 'shift']))
             ->through([
                 new SearchPipeline($filters['search'] ?? null),
                 new StatusFilterPipeline($filters['status'] ?? null),
                 new GenderFilterPipeline($filters['gender'] ?? null),
-                new SortPipeline($filters['sort_by'] ?? 'name', $filters['direction'] ?? 'asc',),
+                new SortPipeline($filters['sort_by'] ?? 'name', $filters['direction'] ?? 'asc'),
             ])
             ->thenReturn();
 
@@ -42,6 +41,7 @@ class EmployeeService
             // Create the associated user account and assign the employee role.
             $temporaryPassword = Str::password();
             $user = User::create([
+                'name' => trim("{$data['first_name']} {$data['last_name']}"),
                 'email' => $data['email'],
                 'password' => Hash::make($temporaryPassword),
             ]);
@@ -57,6 +57,7 @@ class EmployeeService
             $employeeData = [
                 'user_id' => $user->id,
                 'department_id' => $data['department_id'],
+                'shift_id' => $data['shift_id'],
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'phone' => $data['phone'],
@@ -66,11 +67,10 @@ class EmployeeService
                 'identity_document_path' => $documentPath,
                 ...isset($data['status']) ? ['status' => $data['status']] : [],
             ];
-            $employee = Employee::create($employeeData)->refresh()->load('user')->load('department');
-
+            $employee = Employee::create($employeeData)->refresh()->load(['user', 'department', 'shift']);
 
             // Return the employee with a temporary password for the assoiated user account
-            return ['employee' => $employee, 'temporary_password' => $temporaryPassword,];
+            return ['employee' => $employee, 'temporary_password' => $temporaryPassword];
         });
     }
 
@@ -102,13 +102,13 @@ class EmployeeService
             // Update the employee with only the submitted fields.
             $employee->update($data);
 
-            return $employee->refresh()->load('user')->load('department');
+            return $employee->refresh()->load(['user', 'department', 'shift']);
         });
     }
 
     public function show(Employee $employee): Employee
     {
-        return $employee->loadMissing('user');
+        return $employee->loadMissing(['user', 'department', 'shift']);
     }
 
     public function delete(Employee $employee): void
@@ -126,6 +126,6 @@ class EmployeeService
             $employee->user()->withTrashed()->restore();
         });
 
-        return $employee->refresh()->load('user');
+        return $employee->refresh()->load(['user', 'department', 'shift']);
     }
 }

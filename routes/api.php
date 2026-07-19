@@ -29,5 +29,8 @@ Route::prefix('v1')->group(function () {
 
         // Department Routes
         Route::apiResource('departments', V1\DepartmentController::class);
+
+        // Shift Routes
+        Route::apiResource('shifts', V1\ShiftController::class);
     });
 });
