@@ -19,16 +19,22 @@ request:
     - name: Content-Type
       value: application/json
       disabled: true
-    - name: token
-      value: 7|lAisUX30z6CAHaCsS614s1Sqv7GNU9AHoP72si148be63938
     - name: Content-Type
       value: multipart/form-data
       disabled: true
+    - name: Accept
+      value: application/json
   variables:
     - name: baseUrl
       value: http://127.0.0.1:8001/api/v1/
+    - name: apiUrl
+      value: http://127.0.0.1:8001/api/
     - name: holidayId
       value: REPLACE_WITH_HOLIDAY_ID
+    - name: shiftId
+      value: REPLACE_WITH_SHIFT_ID
+    - name: attendanceCorrectionId
+      value: REPLACE_WITH_ATTENDANCE_CORRECTION_ID
 bundled: false
 extensions:
   bruno:

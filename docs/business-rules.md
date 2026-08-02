@@ -46,7 +46,8 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Clock-in and clock-out actions use their server-managed `created_at` timestamp.
 - Direct clock-in and clock-out actions require an image; correction timelines do not.
 - Attendance actions must alternate between clock-in and clock-out.
-- Employees require the corresponding clock-in or clock-out permission.
+- Employees record direct actions through one endpoint, and the system derives the next action from the latest log.
+- Employees require the `attendance.record` permission to record an action.
 - Consecutive attendance actions must respect the configured minimum interval.
 - The configured attendance method is not validated in Version 1.
 - Employees submit one complete proposed timeline and a note for each correction request.

@@ -741,3 +741,33 @@ A complete timeline lets the system validate sequence and configured gaps consis
 ## Impact
 
 Employees submit a note and a full action array without correction images. At most one pending correction exists for an employee and date. Approval atomically replaces that day's attendance logs; rejection leaves them unchanged.
+
+---
+
+# ADR-024
+
+## Title
+
+Single Attendance Action Endpoint
+
+## Status
+
+Accepted
+
+## Decision
+
+Direct attendance actions will use `POST /api/v1/attendance/actions` and one `attendance.record` permission. The server determines whether the new log is `clock_in` or `clock_out` from the employee's latest log for the day.
+
+## Reason
+
+The action sequence is a domain rule, not a client choice. A single endpoint prevents clients from requesting an invalid action and simplifies the permission model without reducing authorization control.
+
+## Alternatives Considered
+
+- Keep separate clock-in and clock-out endpoints with separate permissions.
+- Accept an action value in the request body.
+- Allow the client to select the next action without server validation.
+
+## Impact
+
+The first recorded action of a day is always `clock_in`. Each following request alternates the action based on the latest attendance log and continues to enforce the configured minimum interval.

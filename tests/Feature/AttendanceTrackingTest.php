@@ -47,7 +47,7 @@ class AttendanceTrackingTest extends TestCase
 
     public function test_attendance_actions_are_blocked_until_configuration_exists(): void
     {
-        $response = $this->actingAs(User::factory()->create())->post('/api/v1/attendance/clock-in', [
+        $response = $this->actingAs(User::factory()->create())->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ]);
 
@@ -56,7 +56,7 @@ class AttendanceTrackingTest extends TestCase
             ->assertJsonPath('message', 'Attendance configuration has not been completed.');
     }
 
-    public function test_employee_can_clock_in_and_out_with_required_images(): void
+    public function test_employee_can_record_alternating_attendance_actions_with_required_images(): void
     {
         Storage::fake('local');
         $user = $this->attendanceUser();
@@ -67,7 +67,7 @@ class AttendanceTrackingTest extends TestCase
         ]);
 
         Carbon::setTestNow('2026-07-20 09:00:00');
-        $clockIn = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+        $clockIn = $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ]);
 
@@ -77,7 +77,7 @@ class AttendanceTrackingTest extends TestCase
             ->assertJsonPath('data.logs.0.created_at', '2026-07-20T09:00:00.000000Z');
 
         Carbon::setTestNow('2026-07-20 09:01:00');
-        $clockOut = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
+        $clockOut = $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-out.png'),
         ]);
 
@@ -90,18 +90,18 @@ class AttendanceTrackingTest extends TestCase
         Storage::disk('local')->assertExists($clockOut->json('data.logs.1.image_path'));
     }
 
-    public function test_clock_out_requires_a_prior_clock_in(): void
+    public function test_first_attendance_action_is_clock_in(): void
     {
         $user = $this->attendanceUser();
         $this->createConfiguration();
 
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
-            'image' => UploadedFile::fake()->image('clock-out.jpg'),
+        $response = $this->actingAs($user)->post('/api/v1/attendance/actions', [
+            'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ]);
 
         $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['attendance']);
+            ->assertCreated()
+            ->assertJsonPath('data.logs.0.action', 'clock_in');
     }
 
     public function test_attendance_actions_must_follow_the_configured_interval(): void
@@ -110,12 +110,12 @@ class AttendanceTrackingTest extends TestCase
         $this->createConfiguration(['minimum_action_interval_minutes' => 2]);
 
         Carbon::setTestNow('2026-07-20 09:00:00');
-        $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+        $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ])->assertCreated();
 
         Carbon::setTestNow('2026-07-20 09:01:00');
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
+        $response = $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-out.jpg'),
         ]);
 
@@ -124,50 +124,33 @@ class AttendanceTrackingTest extends TestCase
             ->assertJsonValidationErrors(['attendance']);
     }
 
-    public function test_clock_in_must_follow_a_clock_out(): void
+    public function test_attendance_action_is_derived_from_the_latest_log(): void
     {
         $user = $this->attendanceUser();
         $this->createConfiguration();
 
         Carbon::setTestNow('2026-07-20 09:00:00');
-        $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+        $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ])->assertCreated();
 
         Carbon::setTestNow('2026-07-20 09:01:00');
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
-            'image' => UploadedFile::fake()->image('second-clock-in.jpg'),
+        $response = $this->actingAs($user)->post('/api/v1/attendance/actions', [
+            'image' => UploadedFile::fake()->image('clock-out.jpg'),
         ]);
 
         $response
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['attendance']);
+            ->assertCreated()
+            ->assertJsonPath('data.logs.1.action', 'clock_out');
     }
 
-    public function test_employee_requires_clock_in_permission(): void
+    public function test_employee_requires_attendance_record_permission(): void
     {
         $user = $this->attendanceUser(false);
         $this->createConfiguration();
 
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+        $response = $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
-        ]);
-
-        $response->assertForbidden();
-    }
-
-    public function test_employee_requires_clock_out_permission(): void
-    {
-        $user = $this->attendanceUser(false);
-        $this->createConfiguration();
-        $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
-
-        $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
-            'image' => UploadedFile::fake()->image('clock-in.jpg'),
-        ])->assertCreated();
-
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-out', [
-            'image' => UploadedFile::fake()->image('clock-out.jpg'),
         ]);
 
         $response->assertForbidden();
@@ -177,10 +160,10 @@ class AttendanceTrackingTest extends TestCase
     {
         $user = User::factory()->create();
         Employee::factory()->for($user)->create();
-        $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
+        $this->grantPermission($user, Permission::ATTENDANCE_RECORD);
         $this->createConfiguration();
 
-        $response = $this->actingAs($user)->post('/api/v1/attendance/clock-in', [
+        $response = $this->actingAs($user)->post('/api/v1/attendance/actions', [
             'image' => UploadedFile::fake()->image('clock-in.jpg'),
         ]);
 
@@ -194,7 +177,7 @@ class AttendanceTrackingTest extends TestCase
         $user = $this->attendanceUser();
         $this->createConfiguration();
 
-        $response = $this->actingAs($user)->postJson('/api/v1/attendance/clock-in');
+        $response = $this->actingAs($user)->postJson('/api/v1/attendance/actions');
 
         $response
             ->assertUnprocessable()
@@ -218,8 +201,7 @@ class AttendanceTrackingTest extends TestCase
         Employee::factory()->for($user)->create(['shift_id' => $shift->id]);
 
         if ($withAttendancePermissions) {
-            $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_IN);
-            $this->grantPermission($user, Permission::ATTENDANCE_CLOCK_OUT);
+            $this->grantPermission($user, Permission::ATTENDANCE_RECORD);
         }
 
         return $user;

@@ -1,0 +1,15 @@
+info:
+  name: Reject Attendance Correction
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}attendance-corrections/{{attendanceCorrectionId}}/reject"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

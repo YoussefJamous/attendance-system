@@ -15,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 
 class AttendanceService
 {
-    public function clockIn(User $user, UploadedFile $image): Attendance
+    public function record(User $user, UploadedFile $image): Attendance
     {
         return DB::transaction(function () use ($user, $image) {
             $employee = $this->attendanceEmployee($user);
@@ -34,29 +34,13 @@ class AttendanceService
                 ]);
             }
 
-            $this->addLog($attendance, AttendanceAction::CLOCK_IN, $image);
+            $lastLog = $attendance->logs()->latest('created_at')->first();
+            $action = $lastLog?->action === AttendanceAction::CLOCK_IN
+                ? AttendanceAction::CLOCK_OUT
+                : AttendanceAction::CLOCK_IN;
 
-            return $attendance->load('logs');
-        });
-    }
-
-    public function clockOut(User $user, UploadedFile $image): Attendance
-    {
-        return DB::transaction(function () use ($user, $image) {
-            $employee = $this->attendanceEmployee($user);
-            $now = now();
-            $attendance = Attendance::query()
-                ->where('employee_id', $employee->id)
-                ->whereDate('attendance_date', $now->toDateString())
-                ->first();
-
-            if (! $attendance) {
-                throw ValidationException::withMessages([
-                    'attendance' => ['Clock in is required before clocking out.'],
-                ]);
-            }
-
-            $this->addLog($attendance, AttendanceAction::CLOCK_OUT, $image);
+            $this->validateMinimumInterval($lastLog?->created_at, $now);
+            $this->addLog($attendance, $action, $image);
 
             return $attendance->load('logs');
         });
@@ -83,38 +67,10 @@ class AttendanceService
 
     private function addLog(Attendance $attendance, AttendanceAction $action, UploadedFile $image): void
     {
-        $lastLog = $attendance->logs()->latest('created_at')->first();
-
-        $this->validateAction($lastLog?->action, $action);
-        $this->validateMinimumInterval($lastLog?->created_at, now());
-
         $attendance->logs()->create([
             'action' => $action,
             'image_path' => $image->store('attendance/images', 'local'),
         ]);
-    }
-
-    private function validateAction(?AttendanceAction $lastAction, AttendanceAction $action): void
-    {
-        if ($lastAction === null && $action === AttendanceAction::CLOCK_OUT) {
-            throw ValidationException::withMessages([
-                'attendance' => ['Clock in is required before clocking out.'],
-            ]);
-        }
-
-        if ($lastAction === null) {
-            return;
-        }
-
-        $expectedAction = $lastAction === AttendanceAction::CLOCK_IN
-            ? AttendanceAction::CLOCK_OUT
-            : AttendanceAction::CLOCK_IN;
-
-        if ($action !== $expectedAction) {
-            throw ValidationException::withMessages([
-                'attendance' => ["A {$action->value} action must follow a {$expectedAction->value} action."],
-            ]);
-        }
     }
 
     private function validateMinimumInterval(?Carbon $lastOccurredAt, Carbon $now): void

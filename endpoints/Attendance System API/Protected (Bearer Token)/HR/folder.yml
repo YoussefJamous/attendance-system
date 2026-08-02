@@ -1,0 +1,9 @@
+info:
+  name: HR
+  type: folder
+  seq: 1
+
+request:
+  auth:
+    type: bearer
+    token: REPLACE_WITH_HR_TOKEN

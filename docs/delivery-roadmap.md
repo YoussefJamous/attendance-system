@@ -197,7 +197,7 @@ Delivered for employees:
 
 - Clock in and clock out with a required private image.
 - Use a server-managed action timestamp.
-- Use action-specific permissions and require an assigned shift.
+- Record actions through one endpoint using the `attendance.record` permission and require an assigned shift.
 
 Delivered for HR:
 

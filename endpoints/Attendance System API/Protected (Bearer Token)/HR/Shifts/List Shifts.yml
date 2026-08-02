@@ -1,0 +1,15 @@
+info:
+  name: List Shifts
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}shifts"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

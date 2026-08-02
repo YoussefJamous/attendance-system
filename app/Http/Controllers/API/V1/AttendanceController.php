@@ -13,28 +13,15 @@ class AttendanceController extends ApiController
 {
     public function __construct(private readonly AttendanceService $attendanceService) {}
 
-    public function clockIn(ClockAttendanceRequest $request): JsonResponse
+    public function record(ClockAttendanceRequest $request): JsonResponse
     {
-        $this->authorize('clockIn', Attendance::class);
+        $this->authorize('record', Attendance::class);
 
-        $attendance = $this->attendanceService->clockIn($request->user(), $request->file('image'));
+        $attendance = $this->attendanceService->record($request->user(), $request->file('image'));
 
         return $this->success(
             new AttendanceResource($attendance),
-            'Clocked in successfully.',
-            201,
-        );
-    }
-
-    public function clockOut(ClockAttendanceRequest $request): JsonResponse
-    {
-        $this->authorize('clockOut', Attendance::class);
-
-        $attendance = $this->attendanceService->clockOut($request->user(), $request->file('image'));
-
-        return $this->success(
-            new AttendanceResource($attendance),
-            'Clocked out successfully.',
+            'Attendance action recorded successfully.',
             201,
         );
     }

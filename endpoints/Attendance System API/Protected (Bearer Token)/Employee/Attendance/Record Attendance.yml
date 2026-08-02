@@ -1,11 +1,11 @@
 info:
-  name: Clock Out
+  name: Record Attendance
   type: http
-  seq: 2
+  seq: 1
 
 http:
   method: POST
-  url: "{{baseUrl}}attendance/clock-out"
+  url: "{{baseUrl}}attendance/actions"
   body:
     type: multipart-form
     data:

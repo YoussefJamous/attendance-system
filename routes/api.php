@@ -46,8 +46,7 @@ Route::prefix('v1')->group(function () {
 
         // Attendance Routes
         Route::middleware('attendance.configured')->prefix('attendance')->controller(V1\AttendanceController::class)->group(function () {
-            Route::post('clock-in', 'clockIn');
-            Route::post('clock-out', 'clockOut');
+            Route::post('actions', 'record');
         });
 
         // Attendance Correction Routes

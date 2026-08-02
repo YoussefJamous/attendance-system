@@ -7,13 +7,8 @@ use App\Models\User;
 
 class AttendancePolicy
 {
-    public function clockIn(User $user): bool
+    public function record(User $user): bool
     {
-        return $user->can(Permission::ATTENDANCE_CLOCK_IN->value);
-    }
-
-    public function clockOut(User $user): bool
-    {
-        return $user->can(Permission::ATTENDANCE_CLOCK_OUT->value);
+        return $user->can(Permission::ATTENDANCE_RECORD->value);
     }
 }

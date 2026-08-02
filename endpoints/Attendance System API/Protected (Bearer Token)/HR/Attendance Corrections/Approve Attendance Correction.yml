@@ -1,0 +1,15 @@
+info:
+  name: Approve Attendance Correction
+  type: http
+  seq: 3
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}attendance-corrections/{{attendanceCorrectionId}}/approve"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -45,8 +45,7 @@ class RolePermissionSeeder extends Seeder
             Permission::PROFILE_VIEW->value,
             Permission::PROFILE_UPDATE->value,
             Permission::DEPARTMENTS_VIEW->value,
-            Permission::ATTENDANCE_CLOCK_IN->value,
-            Permission::ATTENDANCE_CLOCK_OUT->value,
+            Permission::ATTENDANCE_RECORD->value,
             Permission::ATTENDANCE_CORRECTIONS_VIEW->value,
             Permission::ATTENDANCE_CORRECTIONS_CREATE->value,
         ]);

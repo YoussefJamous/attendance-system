@@ -38,8 +38,7 @@ enum Permission: string
     case SYSTEM_CONFIGURATION_MANAGE = 'system-configuration.manage';
 
     // Attendance
-    case ATTENDANCE_CLOCK_IN = 'attendance.clock-in';
-    case ATTENDANCE_CLOCK_OUT = 'attendance.clock-out';
+    case ATTENDANCE_RECORD = 'attendance.record';
     case ATTENDANCE_CORRECTIONS_VIEW = 'attendance-corrections.view';
     case ATTENDANCE_CORRECTIONS_CREATE = 'attendance-corrections.create';
     case ATTENDANCE_CORRECTIONS_MANAGE = 'attendance-corrections.manage';

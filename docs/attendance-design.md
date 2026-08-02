@@ -8,6 +8,8 @@ Each employee has one attendance record per working day. The attendance record a
 
 Attendance supports multiple clock-in and clock-out actions during the same day, allowing employees to take lunch breaks, prayer breaks, or any other temporary leave without limiting the number of attendance intervals.
 
+Employees record every direct action through one attendance endpoint. The service derives the next action from the latest log, so a new day begins with clock-in and each later request alternates clock-out and clock-in.
+
 Working hours are calculated from attendance logs rather than fixed clock-in and clock-out columns.
 
 Employees may be created before a shift is assigned. A shift assignment will be required before an employee can use attendance endpoints when Attendance Tracking is implemented.
@@ -22,9 +24,9 @@ Employees may be created before a shift is assigned. A shift assignment will be 
 - Attendance does not store clock-in or clock-out timestamps directly.
 - Attendance logs contain all attendance actions.
 - A clock action uses its server-managed `created_at` timestamp.
-- Every clock action requires an image as attendance evidence.
+- Every direct clock action requires an image as attendance evidence.
 - Actions must alternate: clock-in, then clock-out, with later intervals following the same order.
-- Employees require the corresponding clock-in or clock-out permission for each action.
+- Employees require the `attendance.record` permission to record an action.
 
 ---
 

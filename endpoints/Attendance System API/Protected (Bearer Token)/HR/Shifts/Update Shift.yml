@@ -1,0 +1,31 @@
+info:
+  name: Update Shift
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{baseUrl}}shifts/{{shiftId}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Updated Office Shift",
+        "description": "Updated standard office schedule",
+        "is_active": true,
+        "days": [
+          {
+            "day_of_week": "monday",
+            "work_start_time": "09:00",
+            "work_end_time": "18:00",
+            "break_duration_minutes": 60
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
