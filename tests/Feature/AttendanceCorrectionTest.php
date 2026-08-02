@@ -9,6 +9,7 @@ use App\Enums\AttendanceStatus;
 use App\Enums\Permission;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Shift;
 use App\Models\SystemConfiguration;
@@ -157,6 +158,49 @@ class AttendanceCorrectionTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_hr_can_filter_and_sort_attendance_corrections(): void
+    {
+        $this->createConfiguration();
+        $engineering = Department::create(['name' => 'Engineering', 'code' => 'ENG']);
+        $design = Department::create(['name' => 'Design', 'code' => 'DSN']);
+        $firstEmployee = $this->employeeWithPermissions();
+        $secondEmployee = $this->employeeWithPermissions();
+        $firstEmployee->employee->update(['department_id' => $engineering->id]);
+        $secondEmployee->employee->update(['department_id' => $design->id]);
+
+        $firstCorrection = $this->correctionFor($firstEmployee, '2026-07-20', AttendanceCorrectionStatus::PENDING);
+        $this->correctionFor($firstEmployee, '2026-07-22', AttendanceCorrectionStatus::PENDING);
+        $this->correctionFor($secondEmployee, '2026-07-21', AttendanceCorrectionStatus::APPROVED);
+        $hr = $this->userWithPermission(Permission::ATTENDANCE_CORRECTIONS_MANAGE);
+
+        $response = $this->actingAs($hr)->getJson('/api/v1/attendance-corrections?status=pending&date_from=2026-07-20&date_to=2026-07-21&employee_id='.$firstEmployee->employee->id.'&department_id='.$engineering->id.'&sort_by=attendance_date&sort_direction=asc');
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data.attendance_corrections')
+            ->assertJsonPath('data.attendance_corrections.0.id', $firstCorrection->id);
+    }
+
+    public function test_employee_index_is_scoped_to_their_corrections_and_rejects_hr_only_filters(): void
+    {
+        $this->createConfiguration();
+        $firstEmployee = $this->employeeWithPermissions(Permission::ATTENDANCE_CORRECTIONS_VIEW);
+        $secondEmployee = $this->employeeWithPermissions(Permission::ATTENDANCE_CORRECTIONS_VIEW);
+        $firstCorrection = $this->correctionFor($firstEmployee, '2026-07-20', AttendanceCorrectionStatus::PENDING);
+        $this->correctionFor($secondEmployee, '2026-07-20', AttendanceCorrectionStatus::PENDING);
+
+        $this->actingAs($firstEmployee)
+            ->getJson('/api/v1/attendance-corrections')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.attendance_corrections')
+            ->assertJsonPath('data.attendance_corrections.0.id', $firstCorrection->id);
+
+        $this->actingAs($firstEmployee)
+            ->getJson('/api/v1/attendance-corrections?employee_id='.$secondEmployee->employee->id)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['employee_id']);
+    }
+
     private function submitCorrection(User $user): AttendanceCorrection
     {
         $attendance = Attendance::query()
@@ -197,6 +241,15 @@ class AttendanceCorrectionTest extends TestCase
             'employee_id' => $user->employee->id,
             'attendance_date' => $date,
             'status' => AttendanceStatus::INCOMPLETE,
+        ]);
+    }
+
+    private function correctionFor(User $user, string $date, AttendanceCorrectionStatus $status): AttendanceCorrection
+    {
+        return AttendanceCorrection::create([
+            'attendance_id' => $this->attendanceFor($user, $date)->id,
+            'note' => 'Attendance correction for filtering.',
+            'status' => $status,
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\ApiController;
+use App\Http\Requests\AttendanceCorrection\IndexAttendanceCorrectionRequest;
 use App\Http\Requests\AttendanceCorrection\StoreAttendanceCorrectionRequest;
 use App\Http\Resources\AttendanceCorrectionResource;
 use App\Models\AttendanceCorrection;
@@ -13,13 +14,14 @@ class AttendanceCorrectionController extends ApiController
 {
     public function __construct(private readonly AttendanceCorrectionService $attendanceCorrectionService) {}
 
-    public function index(): JsonResponse
+    public function index(IndexAttendanceCorrectionRequest $request): JsonResponse
     {
         $this->authorize('viewAny', AttendanceCorrection::class);
 
         $corrections = $this->attendanceCorrectionService->index(
-            request()->user(),
-            request()->integer('per_page', $this->per_page),
+            $request->user(),
+            $request->validated(),
+            $request->integer('per_page', $this->per_page),
         );
 
         return $this->success([

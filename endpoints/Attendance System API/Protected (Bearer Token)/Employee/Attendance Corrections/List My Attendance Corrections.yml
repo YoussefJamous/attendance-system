@@ -6,6 +6,35 @@ info:
 http:
   method: GET
   url: "{{baseUrl}}attendance-corrections"
+  params:
+    - name: status
+      value: pending
+      type: query
+      disabled: true
+    - name: attendance_date
+      value: 2026-07-20
+      type: query
+      disabled: true
+    - name: date_from
+      value: 2026-07-01
+      type: query
+      disabled: true
+    - name: date_to
+      value: 2026-07-31
+      type: query
+      disabled: true
+    - name: sort_by
+      value: created_at
+      type: query
+      disabled: true
+    - name: sort_direction
+      value: desc
+      type: query
+      disabled: true
+    - name: per_page
+      value: "10"
+      type: query
+      disabled: true
   auth: inherit
 
 settings:

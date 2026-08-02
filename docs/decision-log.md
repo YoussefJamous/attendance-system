@@ -25,6 +25,7 @@ This register contains only accepted decisions that affect future design or impl
 | Action evidence | Direct actions use server-managed `created_at` timestamps and require private image evidence. |
 | Corrections | A correction targets one existing Attendance record and stores a note plus the complete proposed timeline separately from Attendance Logs. |
 | Correction approval | Only an HR-approved correction replaces the selected record's logs. Pending and rejected corrections leave the record unchanged. |
+| Correction listing | The service establishes HR-all or employee-own scope before reusable status, attendance-date, employee, department, and sorting filters run. |
 
 ## Deferred Decisions
 

@@ -20,7 +20,7 @@ This document tracks delivered and planned capabilities by domain. It distinguis
 | Shifts | Complete | Full shift and Shift Day management | Receives an optional shift assignment |
 | Holidays | Complete | Full holiday management and Excel import | No holiday endpoint required yet |
 | Attendance Tracking | Partial | System configuration and clock actions are available; attendance review is planned | Can clock in and out |
-| Attendance Corrections | Complete | Can list, approve, and reject correction requests | Can submit and view own correction requests |
+| Attendance Corrections | Complete | Can list, filter, approve, and reject correction requests | Can submit and view filtered own correction requests |
 | Overtime | Planned | Will approve or reject overtime | Will submit overtime requests |
 | Leave Management | Planned | Will manage leave policy and approvals | Will submit leave requests |
 | Reports | Planned | Will access operational reports | Personal reports are not defined yet |
@@ -228,10 +228,11 @@ Delivered for employees:
 
 - Select an attendance record and submit a note with its complete proposed timeline.
 - View only their own correction requests.
+- Filter own requests by status or attendance date.
 
 Delivered for HR:
 
-- List correction requests.
+- List and filter correction requests by status, attendance date, employee, or department.
 - Approve or reject pending requests.
 
 Delivered rules:

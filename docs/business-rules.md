@@ -53,6 +53,8 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Employees select an existing attendance record and submit its complete proposed timeline with a note.
 - A pending correction does not alter the selected attendance record's logs; only HR approval replaces them.
 - An attendance record may have only one pending correction.
+- HR can view all attendance correction requests; employees can view only requests for their own attendance records.
+- Employee correction listings cannot use employee or department filters.
 
 ---
 

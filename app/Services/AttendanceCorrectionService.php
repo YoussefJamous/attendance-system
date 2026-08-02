@@ -10,24 +10,48 @@ use App\Models\AttendanceCorrection;
 use App\Models\Employee;
 use App\Models\SystemConfiguration;
 use App\Models\User;
+use App\Pipelines\AttendanceCorrection\AttendanceDateFilterPipeline;
+use App\Pipelines\AttendanceCorrection\DepartmentFilterPipeline;
+use App\Pipelines\AttendanceCorrection\EmployeeFilterPipeline;
+use App\Pipelines\AttendanceCorrection\SortPipeline;
+use App\Pipelines\AttendanceCorrection\StatusFilterPipeline;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class AttendanceCorrectionService
 {
-    public function index(User $user, int $perPage): LengthAwarePaginator
+    public function index(User $user, array $filters, int $perPage): LengthAwarePaginator
     {
-        $query = AttendanceCorrection::query()
-            ->with(['attendance', 'logs'])
-            ->latest();
+        $query = AttendanceCorrection::query()->with(['attendance', 'logs']);
 
         if (! $user->can(Permission::ATTENDANCE_CORRECTIONS_MANAGE->value)) {
             $query->whereHas('attendance.employee', fn ($employeeQuery) => $employeeQuery->where('user_id', $user->id));
         }
 
-        return $query->paginate($perPage);
+        $query = app(Pipeline::class)
+            ->send($query)
+            ->through([
+                new StatusFilterPipeline($filters['status'] ?? null),
+                new AttendanceDateFilterPipeline(
+                    $filters['attendance_date'] ?? null,
+                    $filters['date_from'] ?? null,
+                    $filters['date_to'] ?? null,
+                ),
+                new EmployeeFilterPipeline($filters['employee_id'] ?? null),
+                new DepartmentFilterPipeline($filters['department_id'] ?? null),
+                new SortPipeline(
+                    $filters['sort_by'] ?? 'created_at',
+                    $filters['sort_direction'] ?? 'desc',
+                ),
+            ])
+            ->thenReturn();
+
+        return $query
+            ->paginate($perPage)
+            ->appends($filters);
     }
 
     public function store(User $user, array $data): AttendanceCorrection

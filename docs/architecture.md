@@ -25,6 +25,7 @@ Resource
 - Authorization is handled using Policies.
 - Validation is handled using Form Requests.
 - API exceptions are rendered using the standard API error response format.
+- Index filtering is composed through reusable query pipelines when a domain supports multiple filters.
 
 The project favors Laravel conventions over custom abstractions.
 
@@ -37,4 +38,5 @@ The project favors Laravel conventions over custom abstractions.
 - Attendance defines an employee's daily attendance summary.
 - Attendance Log defines a clock-in or clock-out action, timestamped by its server-managed `created_at` value, with image evidence.
 - Attendance Correction stores a proposed full attendance timeline until HR approves or rejects it.
+- Attendance Correction listing establishes the requester scope in the service before reusable filters are applied.
 - Overtime will be added in a later subdomain.

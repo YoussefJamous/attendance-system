@@ -76,8 +76,6 @@ Employee (1) ------ (*) Attendance
 
 Attendance (1) ------ (*) Attendance Log
 
-Employee (1) ------ (*) Attendance Correction
-
 Attendance (1) ------ (*) Attendance Correction
 
 Attendance Correction (1) ------ (*) Attendance Correction Log
@@ -93,4 +91,5 @@ Attendance Correction (1) ------ (*) Attendance Correction Log
 - `attendances` has a unique constraint on `(employee_id, attendance_date)`.
 - `attendance_logs.attendance_id` references `attendances.id` and cascades on deletion.
 - `attendance_corrections.attendance_id` references `attendances.id`.
+- `attendance_corrections.attendance_id` is indexed for correction lookup and listing filters.
 - `attendance_correction_logs.attendance_correction_id` references `attendance_corrections.id` and cascades on deletion.
