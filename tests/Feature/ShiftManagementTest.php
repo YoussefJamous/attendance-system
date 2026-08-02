@@ -24,8 +24,9 @@ class ShiftManagementTest extends TestCase
         $shift = Shift::where('name', 'Morning Shift')->firstOrFail();
 
         $this->assertCount(5, $shift->days);
-        $this->assertDatabaseCount('employees', 20);
+        $this->assertDatabaseCount('employees', 21);
         $this->assertDatabaseMissing('employees', ['shift_id' => null]);
+        $this->assertDatabaseHas('users', ['email' => 'employee@example.com']);
     }
 
     public function test_authorized_user_can_create_a_shift_with_days(): void

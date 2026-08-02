@@ -35,7 +35,7 @@ class ApiExceptionHandlingTest extends TestCase
 
     public function test_authentication_errors_use_the_standard_api_response_format(): void
     {
-        $response = $this->getJson('/api/user');
+        $response = $this->getJson('/api/v1/auth/me');
 
         $response
             ->assertUnauthorized()

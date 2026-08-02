@@ -11,8 +11,9 @@ class AttendanceCorrectionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'employee_id' => $this->employee_id,
-            'attendance_date' => $this->attendance_date->toDateString(),
+            'attendance_id' => $this->attendance_id,
+            'employee_id' => $this->attendance->employee_id,
+            'attendance_date' => $this->attendance->attendance_date->toDateString(),
             'note' => $this->note,
             'status' => $this->status->value,
             'logs' => AttendanceCorrectionLogResource::collection($this->whenLoaded('logs')),

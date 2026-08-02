@@ -226,7 +226,7 @@ Models: `AttendanceCorrection` and `AttendanceCorrectionLog`.
 
 Delivered for employees:
 
-- Submit a note and complete proposed timeline for one attendance date.
+- Select an attendance record and submit a note with its complete proposed timeline.
 - View only their own correction requests.
 
 Delivered for HR:
@@ -237,9 +237,10 @@ Delivered for HR:
 Delivered rules:
 
 - Employees do not edit Attendance Logs directly.
+- An attendance record has at most one pending correction.
 - Proposed timelines must alternate clock-in and clock-out, end with clock-out, and respect the configured interval.
 - Pending and rejected corrections do not alter attendance.
-- Approval atomically replaces the day's attendance logs.
+- Approval atomically replaces the selected attendance record's logs.
 
 Remaining:
 

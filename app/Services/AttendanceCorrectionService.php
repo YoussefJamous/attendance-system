@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Enums\AttendanceAction;
 use App\Enums\AttendanceCorrectionStatus;
-use App\Enums\AttendanceStatus;
 use App\Enums\Permission;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
@@ -21,11 +20,11 @@ class AttendanceCorrectionService
     public function index(User $user, int $perPage): LengthAwarePaginator
     {
         $query = AttendanceCorrection::query()
-            ->with('logs')
+            ->with(['attendance', 'logs'])
             ->latest();
 
         if (! $user->can(Permission::ATTENDANCE_CORRECTIONS_MANAGE->value)) {
-            $query->whereHas('employee', fn ($employeeQuery) => $employeeQuery->where('user_id', $user->id));
+            $query->whereHas('attendance.employee', fn ($employeeQuery) => $employeeQuery->where('user_id', $user->id));
         }
 
         return $query->paginate($perPage);
@@ -34,29 +33,38 @@ class AttendanceCorrectionService
     public function store(User $user, array $data): AttendanceCorrection
     {
         $employee = $this->employeeForUser($user);
-        $logs = $this->validatedTimeline($data['attendance_date'], $data['logs']);
-
-        if (AttendanceCorrection::query()
+        $attendance = Attendance::query()
+            ->where('id', $data['attendance_id'])
             ->where('employee_id', $employee->id)
-            ->whereDate('attendance_date', $data['attendance_date'])
-            ->where('status', AttendanceCorrectionStatus::PENDING)
-            ->exists()) {
+            ->first();
+
+        if (! $attendance) {
             throw ValidationException::withMessages([
-                'attendance_date' => ['A pending correction already exists for this date.'],
+                'attendance_id' => ['The selected attendance record is not available.'],
             ]);
         }
 
-        return DB::transaction(function () use ($employee, $data, $logs) {
+        $logs = $this->validatedTimeline($attendance->attendance_date->toDateString(), $data['logs']);
+
+        if (AttendanceCorrection::query()
+            ->where('attendance_id', $attendance->id)
+            ->where('status', AttendanceCorrectionStatus::PENDING)
+            ->exists()) {
+            throw ValidationException::withMessages([
+                'attendance_id' => ['A pending correction already exists for this attendance record.'],
+            ]);
+        }
+
+        return DB::transaction(function () use ($attendance, $data, $logs) {
             $correction = AttendanceCorrection::create([
-                'employee_id' => $employee->id,
-                'attendance_date' => $data['attendance_date'],
+                'attendance_id' => $attendance->id,
                 'note' => $data['note'],
                 'status' => AttendanceCorrectionStatus::PENDING,
             ]);
 
             $correction->logs()->createMany($logs);
 
-            return $correction->load('logs');
+            return $correction->load(['attendance', 'logs']);
         });
     }
 
@@ -64,24 +72,13 @@ class AttendanceCorrectionService
     {
         return DB::transaction(function () use ($correction) {
             $correction = AttendanceCorrection::query()
-                ->with('logs')
+                ->with(['attendance', 'logs'])
                 ->lockForUpdate()
                 ->findOrFail($correction->id);
 
             $this->ensurePending($correction);
 
-            $attendance = Attendance::query()
-                ->where('employee_id', $correction->employee_id)
-                ->whereDate('attendance_date', $correction->attendance_date)
-                ->first();
-
-            if (! $attendance) {
-                $attendance = Attendance::create([
-                    'employee_id' => $correction->employee_id,
-                    'attendance_date' => $correction->attendance_date,
-                    'status' => AttendanceStatus::INCOMPLETE,
-                ]);
-            }
+            $attendance = $correction->attendance;
 
             $attendance->logs()->delete();
 
@@ -99,7 +96,7 @@ class AttendanceCorrectionService
 
             $correction->update(['status' => AttendanceCorrectionStatus::APPROVED]);
 
-            return $correction->fresh()->load('logs');
+            return $correction->fresh()->load(['attendance', 'logs']);
         });
     }
 
@@ -113,7 +110,7 @@ class AttendanceCorrectionService
             $this->ensurePending($correction);
             $correction->update(['status' => AttendanceCorrectionStatus::REJECTED]);
 
-            return $correction->fresh()->load('logs');
+            return $correction->fresh()->load(['attendance', 'logs']);
         });
     }
 

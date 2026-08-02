@@ -1,12 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->controller(V1\AuthController::class)->group(function () {
@@ -50,12 +45,15 @@ Route::prefix('v1')->group(function () {
         });
 
         // Attendance Correction Routes
-        Route::middleware('attendance.configured')->prefix('attendance-corrections')->controller(V1\AttendanceCorrectionController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
-            Route::get('{attendanceCorrection}', 'show');
-            Route::patch('{attendanceCorrection}/approve', 'approve');
-            Route::patch('{attendanceCorrection}/reject', 'reject');
+        Route::middleware('attendance.configured')->group(function () {
+            Route::apiResource('attendance-corrections', V1\AttendanceCorrectionController::class)
+                ->only(['index', 'store', 'show'])
+                ->parameters(['attendance-corrections' => 'attendanceCorrection']);
+
+            Route::prefix('attendance-corrections')->controller(V1\AttendanceCorrectionController::class)->group(function () {
+                Route::patch('{attendanceCorrection}/approve', 'approve');
+                Route::patch('{attendanceCorrection}/reject', 'reject');
+            });
         });
     });
 });

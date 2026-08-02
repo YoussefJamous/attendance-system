@@ -12,14 +12,13 @@ return new class extends Migration
     {
         Schema::create('attendance_corrections', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('employee_id')->constrained()->restrictOnDelete();
-            $table->date('attendance_date');
+            $table->foreignUuid('attendance_id')->constrained()->restrictOnDelete();
             $table->text('note');
             $table->enum('status', AttendanceCorrectionStatus::values())
                 ->default(AttendanceCorrectionStatus::PENDING->value);
             $table->timestamps();
 
-            $table->index(['employee_id', 'attendance_date']);
+            $table->index('attendance_id');
         });
 
         Schema::create('attendance_correction_logs', function (Blueprint $table) {

@@ -207,7 +207,7 @@ Employees cannot modify attendance logs directly.
 
 Instead, they submit attendance correction requests.
 
-A correction request contains a note and the employee's complete proposed timeline for one attendance date. It may add, remove, or modify actions by replacing the proposed array, even when some proposed actions match the existing log.
+A correction request targets one existing attendance record. The employee submits its `attendance_id`, a note, and the complete proposed timeline for that record. It may add, remove, or modify actions by replacing the proposed array, even when some proposed actions match the existing log.
 
 Correction actions contain an action and requested timestamp. They do not require images.
 
@@ -216,6 +216,14 @@ The submitted timeline is validated using the attendance validation rules, inclu
 Only approved correction requests update attendance logs.
 
 Rejected requests do not modify attendance.
+
+Correction flow:
+
+1. The employee selects an existing attendance record.
+2. The employee submits a note and the entire proposed log array for that record.
+3. The system validates ownership, action order, date, and configured action interval, then stores the proposal as pending.
+4. HR reviews the unchanged original logs alongside the proposed timeline.
+5. Approval replaces the record's logs atomically; rejection leaves the record unchanged.
 
 ---
 

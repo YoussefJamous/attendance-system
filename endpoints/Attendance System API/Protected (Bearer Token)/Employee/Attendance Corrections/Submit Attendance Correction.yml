@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "attendance_date": "2026-07-20",
+        "attendance_id": "REPLACE_WITH_ATTENDANCE_ID",
         "note": "Correcting my attendance timeline.",
         "logs": [
           {

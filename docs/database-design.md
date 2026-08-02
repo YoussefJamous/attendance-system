@@ -55,7 +55,7 @@ Attendance Log
 - Server-managed `created_at` timestamp and nullable private image path
 
 Attendance Correction
-- Employee's proposed complete attendance timeline for one date
+- Proposed complete timeline for one Attendance record
 - Note and pending, approved, or rejected status
 
 Attendance Correction Log
@@ -78,6 +78,8 @@ Attendance (1) ------ (*) Attendance Log
 
 Employee (1) ------ (*) Attendance Correction
 
+Attendance (1) ------ (*) Attendance Correction
+
 Attendance Correction (1) ------ (*) Attendance Correction Log
 
 ## Constraints
@@ -90,5 +92,5 @@ Attendance Correction (1) ------ (*) Attendance Correction Log
 - Holiday date ranges are independent records and may overlap.
 - `attendances` has a unique constraint on `(employee_id, attendance_date)`.
 - `attendance_logs.attendance_id` references `attendances.id` and cascades on deletion.
-- `attendance_corrections.employee_id` references `employees.id`.
+- `attendance_corrections.attendance_id` references `attendances.id`.
 - `attendance_correction_logs.attendance_correction_id` references `attendance_corrections.id` and cascades on deletion.

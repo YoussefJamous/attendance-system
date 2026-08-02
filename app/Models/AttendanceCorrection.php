@@ -13,8 +13,7 @@ class AttendanceCorrection extends Model
     use HasUuids;
 
     protected $fillable = [
-        'employee_id',
-        'attendance_date',
+        'attendance_id',
         'note',
         'status',
     ];
@@ -22,14 +21,13 @@ class AttendanceCorrection extends Model
     protected function casts(): array
     {
         return [
-            'attendance_date' => 'date',
             'status' => AttendanceCorrectionStatus::class,
         ];
     }
 
-    public function employee(): BelongsTo
+    public function attendance(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Attendance::class);
     }
 
     public function logs(): HasMany

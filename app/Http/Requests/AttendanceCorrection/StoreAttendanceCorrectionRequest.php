@@ -16,7 +16,7 @@ class StoreAttendanceCorrectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'attendance_date' => ['required', 'date_format:Y-m-d'],
+            'attendance_id' => ['required', 'uuid', 'exists:attendances,id'],
             'note' => ['required', 'string', 'max:1000'],
             'logs' => ['required', 'array', 'min:2'],
             'logs.*.action' => ['required', Rule::enum(AttendanceAction::class)],

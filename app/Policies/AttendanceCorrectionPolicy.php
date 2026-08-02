@@ -18,7 +18,7 @@ class AttendanceCorrectionPolicy
     {
         return $user->can(Permission::ATTENDANCE_CORRECTIONS_MANAGE->value)
             || ($user->can(Permission::ATTENDANCE_CORRECTIONS_VIEW->value)
-                && $correction->employee->user_id === $user->id);
+                && $correction->attendance->employee->user_id === $user->id);
     }
 
     public function create(User $user): bool

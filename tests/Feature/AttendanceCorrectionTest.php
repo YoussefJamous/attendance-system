@@ -32,7 +32,7 @@ class AttendanceCorrectionTest extends TestCase
         $this->createConfiguration();
 
         $response = $this->actingAs($user)->postJson('/api/v1/attendance-corrections', [
-            'attendance_date' => '2026-07-20',
+            'attendance_id' => $attendance->id,
             'note' => 'Forgot to clock out after lunch.',
             'logs' => [
                 ['action' => 'clock_in', 'action_at' => '2026-07-20 09:00:00'],
@@ -44,6 +44,7 @@ class AttendanceCorrectionTest extends TestCase
 
         $response
             ->assertCreated()
+            ->assertJsonPath('data.attendance_id', $attendance->id)
             ->assertJsonPath('data.status', AttendanceCorrectionStatus::PENDING->value)
             ->assertJsonCount(4, 'data.logs');
 
@@ -100,10 +101,11 @@ class AttendanceCorrectionTest extends TestCase
     public function test_correction_timeline_must_alternate_and_end_with_clock_out(): void
     {
         $user = $this->employeeWithPermissions(Permission::ATTENDANCE_CORRECTIONS_CREATE);
+        $attendance = $this->attendanceFor($user, '2026-07-20');
         $this->createConfiguration();
 
         $response = $this->actingAs($user)->postJson('/api/v1/attendance-corrections', [
-            'attendance_date' => '2026-07-20',
+            'attendance_id' => $attendance->id,
             'note' => 'Incorrect sequence.',
             'logs' => [
                 ['action' => 'clock_in', 'action_at' => '2026-07-20 09:00:00'],
@@ -119,10 +121,11 @@ class AttendanceCorrectionTest extends TestCase
     public function test_correction_timeline_must_respect_the_configured_minimum_interval(): void
     {
         $user = $this->employeeWithPermissions(Permission::ATTENDANCE_CORRECTIONS_CREATE);
+        $attendance = $this->attendanceFor($user, '2026-07-20');
         $this->createConfiguration(['minimum_action_interval_minutes' => 2]);
 
         $response = $this->actingAs($user)->postJson('/api/v1/attendance-corrections', [
-            'attendance_date' => '2026-07-20',
+            'attendance_id' => $attendance->id,
             'note' => 'Incorrect interval.',
             'logs' => [
                 ['action' => 'clock_in', 'action_at' => '2026-07-20 09:00:00'],
@@ -146,6 +149,7 @@ class AttendanceCorrectionTest extends TestCase
             Permission::ATTENDANCE_CORRECTIONS_VIEW,
         );
         $this->createConfiguration();
+        $this->attendanceFor($firstEmployee, '2026-07-20');
         $correction = $this->submitCorrection($firstEmployee);
 
         $this->actingAs($secondEmployee)
@@ -155,8 +159,13 @@ class AttendanceCorrectionTest extends TestCase
 
     private function submitCorrection(User $user): AttendanceCorrection
     {
+        $attendance = Attendance::query()
+            ->where('employee_id', $user->employee->id)
+            ->whereDate('attendance_date', '2026-07-20')
+            ->firstOrFail();
+
         $this->actingAs($user)->postJson('/api/v1/attendance-corrections', [
-            'attendance_date' => '2026-07-20',
+            'attendance_id' => $attendance->id,
             'note' => 'Correcting my full attendance timeline.',
             'logs' => [
                 ['action' => 'clock_in', 'action_at' => '2026-07-20 09:00:00'],
@@ -171,11 +180,7 @@ class AttendanceCorrectionTest extends TestCase
 
     private function attendanceWithLog(User $user, string $date, string $actionAt): Attendance
     {
-        $attendance = Attendance::create([
-            'employee_id' => $user->employee->id,
-            'attendance_date' => $date,
-            'status' => AttendanceStatus::INCOMPLETE,
-        ]);
+        $attendance = $this->attendanceFor($user, $date);
         $attendance->logs()->create([
             'action' => AttendanceAction::CLOCK_IN,
             'image_path' => 'attendance/images/original.jpg',
@@ -184,6 +189,15 @@ class AttendanceCorrectionTest extends TestCase
         ]);
 
         return $attendance;
+    }
+
+    private function attendanceFor(User $user, string $date): Attendance
+    {
+        return Attendance::create([
+            'employee_id' => $user->employee->id,
+            'attendance_date' => $date,
+            'status' => AttendanceStatus::INCOMPLETE,
+        ]);
     }
 
     private function createConfiguration(array $attributes = []): SystemConfiguration

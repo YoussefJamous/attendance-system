@@ -50,9 +50,9 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Employees require the `attendance.record` permission to record an action.
 - Consecutive attendance actions must respect the configured minimum interval.
 - The configured attendance method is not validated in Version 1.
-- Employees submit one complete proposed timeline and a note for each correction request.
-- A pending correction does not alter attendance logs; only HR approval replaces that day's logs.
-- An employee may have only one pending correction for the same attendance date.
+- Employees select an existing attendance record and submit its complete proposed timeline with a note.
+- A pending correction does not alter the selected attendance record's logs; only HR approval replaces them.
+- An attendance record may have only one pending correction.
 
 ---
 
