@@ -81,15 +81,15 @@ Validation is applied when:
 
 ## Attendance Status
 
-Attendance status is finalized through scheduled jobs after the working day ends.
+New attendance records are currently created with `incomplete` status. Status-finalization jobs are planned but are not implemented yet, so submitting or approving a correction does not currently change the status.
 
-Possible statuses:
+The enum reserves these future statuses:
 
 - Incomplete
 - Waiting For Approval
 - Completed
 
-Examples:
+Target examples after finalization is implemented:
 
 Incomplete
 
@@ -140,7 +140,7 @@ The following settings must be configured before attendance endpoints become ava
 
 Working hours and working days are configured through Shift Days. Each Shift Day defines one weekday's start time, end time, and total break duration.
 
-HR creates one global attendance configuration before attendance endpoints can be used. Attendance endpoints verify that the employee has an assigned shift before allowing attendance actions.
+Version 1 seeds one global configuration using Office WiFi, a one-minute minimum action interval, and zero grace minutes. Configuration-management routes are temporarily disabled. Attendance endpoints verify that the employee has an assigned shift before allowing attendance actions.
 
 The configured attendance method is stored for future enforcement. Version 1 does not yet validate GPS, Office WiFi, or other method evidence.
 

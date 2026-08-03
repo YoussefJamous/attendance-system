@@ -20,7 +20,7 @@ This register contains only accepted decisions that affect future design or impl
 | Shift schedules | A Shift owns one or more Shift Days. Each weekday has its own work times and total break duration. |
 | Overnight shifts | Version 1 stores overnight-capable times but does not calculate or validate overnight work. |
 | Holidays | Holidays are named date ranges, may overlap, and support Excel import through a version-controlled template. |
-| Global configuration | HR manages one system configuration with one attendance method, a minimum action interval, and grace minutes. Method-specific evidence validation is deferred. |
+| Global configuration | Version 1 seeds one Office WiFi configuration with a one-minute minimum action interval and zero grace minutes; management routes are deferred. Method-specific evidence validation is deferred. |
 | Direct attendance actions | `POST /api/v1/attendance/actions` uses `attendance.record`. The server derives the first action as `clock_in` and alternates later actions from the latest log. |
 | Action evidence | Direct actions use server-managed `created_at` timestamps and require private image evidence. |
 | Attendance access | Attendance read access uses `attendance.view`; `attendance.manage` gives HR an unrestricted base query, while employees are scoped to their own records before filters run. |

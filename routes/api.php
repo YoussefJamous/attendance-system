@@ -36,8 +36,9 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('holidays', V1\HolidayController::class);
 
         // System Configuration Routes
-        Route::get('system-configuration', [V1\SystemConfigurationController::class, 'show']);
-        Route::put('system-configuration', [V1\SystemConfigurationController::class, 'update']);
+        // Version 1 uses the SystemConfigurationSeeder until configuration management is released.
+        // Route::get('system-configuration', [V1\SystemConfigurationController::class, 'show']);
+        // Route::put('system-configuration', [V1\SystemConfigurationController::class, 'update']);
 
         // Attendance Routes
         Route::middleware('attendance.configured')->prefix('attendance')->controller(V1\AttendanceController::class)->group(function () {

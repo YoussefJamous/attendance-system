@@ -19,7 +19,7 @@ This document tracks delivered and planned capabilities by domain. It distinguis
 | Employees | Partial | Full employee lifecycle management | No profile endpoint yet |
 | Shifts | Complete | Full shift and Shift Day management | Receives an optional shift assignment |
 | Holidays | Complete | Full holiday management and Excel import | No holiday endpoint required yet |
-| Attendance Tracking | Partial | System configuration and filtered attendance review are available | Can clock in, clock out, and view own attendance |
+| Attendance Tracking | Partial | Seeded system configuration and filtered attendance review are available | Can clock in, clock out, and view own attendance |
 | Attendance Corrections | Complete | Can list, filter, approve, and reject correction requests | Can submit and view filtered own correction requests |
 | Overtime | Planned | Will approve or reject overtime | Will submit overtime requests |
 | Leave Management | Planned | Will manage leave policy and approvals | Will submit leave requests |
@@ -202,7 +202,7 @@ Delivered for employees:
 
 Delivered for HR:
 
-- Configure the global attendance method, minimum action interval, and grace minutes.
+- Version 1 receives a seeded Office WiFi configuration with a one-minute minimum action interval and zero grace minutes.
 - List and view all attendance records, with employee-name, date, status, sorting, and pagination filters.
 
 Delivered rules:
@@ -216,6 +216,7 @@ Delivered rules:
 
 Remaining:
 
+- Re-enable configuration-management endpoints when HR configuration becomes part of the Version 1 workflow.
 - Exact request payload for GPS and Office WiFi evidence.
 - Attendance status finalization and working-time calculation jobs.
 

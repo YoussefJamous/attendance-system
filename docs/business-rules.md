@@ -41,7 +41,8 @@
 
 Attendance rules are documented separately in `attendance-design.md`.
 
-- HR must create the global attendance configuration before employees can clock in or out.
+- Version 1 seeds one global attendance configuration with the Office WiFi method before employees can use attendance endpoints.
+- System-configuration management endpoints are deferred during Version 1 development.
 - Employees require an assigned shift before they can clock in or out.
 - Clock-in and clock-out actions use their server-managed `created_at` timestamp.
 - Direct clock-in and clock-out actions require an image; correction timelines do not.

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             ShiftSeeder::class,
             HolidaySeeder::class,
+            SystemConfigurationSeeder::class,
             UserSeeder::class,
             EmployeeSeeder::class,
         ]);

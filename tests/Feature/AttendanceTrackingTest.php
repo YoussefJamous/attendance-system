@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\Shift;
 use App\Models\SystemConfiguration;
 use App\Models\User;
+use Database\Seeders\SystemConfigurationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
@@ -28,23 +29,16 @@ class AttendanceTrackingTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_hr_can_save_the_global_system_configuration(): void
+    public function test_system_configuration_seeder_creates_the_version_one_configuration(): void
     {
-        $user = $this->userWithPermission(Permission::SYSTEM_CONFIGURATION_MANAGE);
-
-        $response = $this->actingAs($user)->putJson('/api/v1/system-configuration', [
-            'attendance_method' => AttendanceMethod::GPS->value,
-            'minimum_action_interval_minutes' => 2,
-            'grace_minutes' => 10,
-        ]);
-
-        $response
-            ->assertOk()
-            ->assertJsonPath('data.attendance_method', 'gps')
-            ->assertJsonPath('data.minimum_action_interval_minutes', 2)
-            ->assertJsonPath('data.grace_minutes', 10);
+        $this->seed(SystemConfigurationSeeder::class);
 
         $this->assertDatabaseCount('system_configurations', 1);
+        $this->assertDatabaseHas('system_configurations', [
+            'attendance_method' => AttendanceMethod::OFFICE_WIFI->value,
+            'minimum_action_interval_minutes' => 1,
+            'grace_minutes' => 0,
+        ]);
     }
 
     public function test_attendance_actions_are_blocked_until_configuration_exists(): void
