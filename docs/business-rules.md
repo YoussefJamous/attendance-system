@@ -48,6 +48,9 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Direct clock-in and clock-out actions require an image; correction timelines do not.
 - Attendance actions must alternate between clock-in and clock-out.
 - Employees record direct actions through one endpoint, and the system derives the next action from the latest log.
+- New attendance records start as `in_progress`; interim clock-outs do not finalize a workday.
+- A global end-of-day job finalizes in-progress records: a final clock-out becomes `completed` and a final clock-in becomes `incomplete`.
+- A submitted correction sets the related attendance to `waiting_for_approval`; approval or rejection recalculates the attendance status from its logs.
 - Employees require the `attendance.record` permission to record an action.
 - HR can view all attendance records; employees can view only their own attendance records.
 - Employee attendance listings cannot use the employee-name filter.

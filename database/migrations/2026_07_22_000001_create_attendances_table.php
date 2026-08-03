@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('employee_id')->constrained()->restrictOnDelete();
             $table->date('attendance_date');
-            $table->enum('status', AttendanceStatus::values())->default(AttendanceStatus::INCOMPLETE->value);
+            $table->enum('status', AttendanceStatus::values())->default(AttendanceStatus::IN_PROGRESS->value);
             $table->timestamps();
 
             $table->unique(['employee_id', 'attendance_date']);

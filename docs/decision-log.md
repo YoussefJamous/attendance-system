@@ -23,6 +23,7 @@ This register contains only accepted decisions that affect future design or impl
 | Global configuration | Version 1 seeds one Office WiFi configuration with a one-minute minimum action interval and zero grace minutes; management routes are deferred. Method-specific evidence validation is deferred. |
 | Direct attendance actions | `POST /api/v1/attendance/actions` uses `attendance.record`. The server derives the first action as `clock_in` and alternates later actions from the latest log. |
 | Action evidence | Direct actions use server-managed `created_at` timestamps and require private image evidence. |
+| Attendance finalization | New records start in progress. A global 23:59 server schedule finalizes in-progress records by their latest action; correction review temporarily uses waiting for approval and recalculates status on resolution. |
 | Attendance access | Attendance read access uses `attendance.view`; `attendance.manage` gives HR an unrestricted base query, while employees are scoped to their own records before filters run. |
 | Corrections | A correction targets one existing Attendance record and stores a note plus the complete proposed timeline separately from Attendance Logs. |
 | Correction approval | Only an HR-approved correction replaces the selected record's logs. Pending and rejected corrections leave the record unchanged. |

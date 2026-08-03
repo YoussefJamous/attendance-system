@@ -51,6 +51,7 @@ class AttendanceCorrectionTest extends TestCase
 
         $this->assertDatabaseCount('attendance_logs', 1);
         $this->assertSame('clock_in', $attendance->logs()->firstOrFail()->action->value);
+        $this->assertSame(AttendanceStatus::WAITING_FOR_APPROVAL, $attendance->fresh()->status);
     }
 
     public function test_hr_approval_replaces_the_attendance_logs_with_the_proposed_timeline(): void
@@ -80,6 +81,7 @@ class AttendanceCorrectionTest extends TestCase
         $this->assertSame('2026-07-20 09:00:00', $logs->first()->created_at->format('Y-m-d H:i:s'));
         $this->assertNull($logs->first()->image_path);
         $this->assertSame('clock_out', $logs->last()->action->value);
+        $this->assertSame(AttendanceStatus::COMPLETED, $attendance->status);
     }
 
     public function test_hr_rejection_keeps_existing_attendance_logs_unchanged(): void
@@ -97,6 +99,7 @@ class AttendanceCorrectionTest extends TestCase
 
         $this->assertDatabaseCount('attendance_logs', 1);
         $this->assertSame('clock_in', $attendance->fresh()->logs()->firstOrFail()->action->value);
+        $this->assertSame(AttendanceStatus::INCOMPLETE, $attendance->fresh()->status);
     }
 
     public function test_correction_timeline_must_alternate_and_end_with_clock_out(): void

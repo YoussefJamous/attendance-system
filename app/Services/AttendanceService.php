@@ -55,6 +55,36 @@ class AttendanceService
         return $attendance->loadMissing(['employee', 'logs']);
     }
 
+    public function finalizeDay(Carbon|string $date): array
+    {
+        $date = Carbon::parse($date)->toDateString();
+
+        return DB::transaction(function () use ($date) {
+            $attendances = Attendance::query()
+                ->whereDate('attendance_date', $date)
+                ->where('status', AttendanceStatus::IN_PROGRESS)
+                ->get();
+
+            $finalized = 0;
+
+            foreach ($attendances as $attendance) {
+                $attendance->update(['status' => $this->finalizedStatus($attendance)]);
+                $finalized++;
+            }
+
+            return ['date' => $date, 'finalized' => $finalized];
+        });
+    }
+
+    public function finalizedStatus(Attendance $attendance): AttendanceStatus
+    {
+        $lastLog = $attendance->logs()->latest('created_at')->first();
+
+        return $lastLog?->action === AttendanceAction::CLOCK_OUT
+            ? AttendanceStatus::COMPLETED
+            : AttendanceStatus::INCOMPLETE;
+    }
+
     public function record(User $user, UploadedFile $image): Attendance
     {
         return DB::transaction(function () use ($user, $image) {
@@ -70,7 +100,7 @@ class AttendanceService
                 $attendance = Attendance::create([
                     'employee_id' => $employee->id,
                     'attendance_date' => $now->toDateString(),
-                    'status' => AttendanceStatus::INCOMPLETE,
+                    'status' => AttendanceStatus::IN_PROGRESS,
                 ]);
             }
 

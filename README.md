@@ -57,6 +57,7 @@ Project documentation can be found inside the `docs` directory.
 - Development Workflow
 - Decision Log
 - Roadmap
+- Custom Commands
 
 ---
 

@@ -64,32 +64,28 @@ Lunch breaks and other breaks are automatically excluded from the working durati
 
 ## Attendance Validation
 
-Every attendance timeline must satisfy the following rules:
+Every submitted correction timeline must satisfy the following rules:
 
 - The first action must always be Clock In.
 - Actions must alternate between Clock In and Clock Out.
 - The final action of the day must always be Clock Out.
 - Consecutive attendance actions must be separated by at least one minute.
 
-Validation is applied when:
+Validation is applied when submitting or approving a correction request:
 
-- Creating attendance logs.
-- Submitting attendance correction requests.
-- Approving attendance correction requests.
 
 ---
 
 ## Attendance Status
 
-New attendance records are currently created with `incomplete` status. Status-finalization jobs are planned but are not implemented yet, so submitting or approving a correction does not currently change the status.
+New attendance records begin as `in_progress`. A global scheduled command runs at 23:59 in the application timezone and finalizes only in-progress records for that calendar day.
 
-The enum reserves these future statuses:
+Statuses:
 
-- Incomplete
-- Waiting For Approval
-- Completed
-
-Target examples after finalization is implemented:
+- In Progress: The workday remains open; interim clock-outs, including lunch breaks, do not change the status.
+- Waiting For Approval: The employee submitted a correction request for the record.
+- Incomplete: End-of-day finalization found an open final clock-in, or HR rejected a correction and the original timeline ends with clock-in.
+- Completed: End-of-day finalization found a final clock-out, or HR approved a correction whose proposed timeline ends with clock-out.
 
 Incomplete
 
@@ -125,6 +121,8 @@ Only completed attendance intervals contribute to the total working duration.
 Breaks are excluded automatically.
 
 No attendance-specific lunch break logic is required.
+
+Working-duration comparison against Shift Day hours is deferred. Version 1 finalizes status from the log sequence only.
 
 ---
 
@@ -234,10 +232,9 @@ The system uses scheduled jobs for attendance maintenance.
 
 Daily scheduled job:
 
-- Finalizes attendance status.
-- Marks incomplete attendance.
-- Marks completed attendance.
-- Updates attendance waiting for HR approval.
+- Runs `attendance:finalize` at 23:59 in `APP_TIMEZONE`.
+- Marks in-progress records completed or incomplete from their latest log.
+- Leaves waiting-for-approval records unchanged.
 
 Monthly scheduled job:
 

@@ -48,7 +48,7 @@ System Configuration
 
 Attendance
 - Daily attendance summary for one employee
-- Attendance date and status
+- Attendance date and status: `in_progress`, `waiting_for_approval`, `incomplete`, or `completed`
 - Employee relationship supports HR and employee-scoped attendance listing
 
 Attendance Log

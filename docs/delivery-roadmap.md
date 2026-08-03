@@ -199,11 +199,13 @@ Delivered for employees:
 - Use a server-managed action timestamp.
 - Record actions through one endpoint using the `attendance.record` permission and require an assigned shift.
 - List and view only their own attendance records.
+- Receive automatic end-of-day attendance finalization without a manual end-day action.
 
 Delivered for HR:
 
 - Version 1 receives a seeded Office WiFi configuration with a one-minute minimum action interval and zero grace minutes.
 - List and view all attendance records, with employee-name, date, status, sorting, and pagination filters.
+- Review records that are incomplete or waiting for correction approval.
 
 Delivered rules:
 
@@ -218,7 +220,7 @@ Remaining:
 
 - Re-enable configuration-management endpoints when HR configuration becomes part of the Version 1 workflow.
 - Exact request payload for GPS and Office WiFi evidence.
-- Attendance status finalization and working-time calculation jobs.
+- Working-time calculation and reporting.
 
 ### 4. Attendance Corrections
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\AttendanceAction;
 use App\Enums\AttendanceMethod;
 use App\Enums\AttendanceStatus;
 use App\Enums\Permission;
@@ -97,7 +98,8 @@ class AttendanceTrackingTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonPath('data.logs.0.action', 'clock_in');
+            ->assertJsonPath('data.logs.0.action', 'clock_in')
+            ->assertJsonPath('data.status', AttendanceStatus::IN_PROGRESS->value);
     }
 
     public function test_attendance_actions_must_follow_the_configured_interval(): void
@@ -192,7 +194,7 @@ class AttendanceTrackingTest extends TestCase
         $hr = $this->userWithPermission(Permission::ATTENDANCE_MANAGE);
 
         $this->actingAs($hr)
-            ->getJson('/api/v1/attendance?employee_name=Amina&date_from=2026-07-20&date_to=2026-07-20&status=incomplete&sort_by=employee_name&sort_direction=asc')
+            ->getJson('/api/v1/attendance?employee_name=Amina&date_from=2026-07-20&date_to=2026-07-20&status=in_progress&sort_by=employee_name&sort_direction=asc')
             ->assertOk()
             ->assertJsonCount(1, 'data.attendances')
             ->assertJsonPath('data.attendances.0.id', $firstAttendance->id)
@@ -228,6 +230,45 @@ class AttendanceTrackingTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_attendance_finalization_command_completes_closed_records_and_marks_open_records_incomplete(): void
+    {
+        $completedAttendance = $this->attendanceFor($this->attendanceUser(), '2026-07-20');
+        $incompleteAttendance = $this->attendanceFor($this->attendanceUser(), '2026-07-20');
+        $waitingAttendance = $this->attendanceFor(
+            $this->attendanceUser(),
+            '2026-07-20',
+            AttendanceStatus::WAITING_FOR_APPROVAL,
+        );
+
+        $completedAttendance->logs()->create([
+            'action' => AttendanceAction::CLOCK_OUT,
+            'created_at' => '2026-07-20 18:00:00',
+            'updated_at' => '2026-07-20 18:00:00',
+        ]);
+        $incompleteAttendance->logs()->create([
+            'action' => AttendanceAction::CLOCK_IN,
+            'created_at' => '2026-07-20 09:00:00',
+            'updated_at' => '2026-07-20 09:00:00',
+        ]);
+
+        $this->artisan('attendance:finalize 2026-07-20')
+            ->expectsOutput('Finalized 2 attendance record(s) for 2026-07-20.')
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('attendances', [
+            'id' => $completedAttendance->id,
+            'status' => AttendanceStatus::COMPLETED->value,
+        ]);
+        $this->assertDatabaseHas('attendances', [
+            'id' => $incompleteAttendance->id,
+            'status' => AttendanceStatus::INCOMPLETE->value,
+        ]);
+        $this->assertDatabaseHas('attendances', [
+            'id' => $waitingAttendance->id,
+            'status' => AttendanceStatus::WAITING_FOR_APPROVAL->value,
+        ]);
+    }
+
     private function createConfiguration(array $attributes = []): SystemConfiguration
     {
         return SystemConfiguration::create([
@@ -252,7 +293,7 @@ class AttendanceTrackingTest extends TestCase
         return $user;
     }
 
-    private function attendanceFor(User $user, string $date, AttendanceStatus $status = AttendanceStatus::INCOMPLETE): Attendance
+    private function attendanceFor(User $user, string $date, AttendanceStatus $status = AttendanceStatus::IN_PROGRESS): Attendance
     {
         return Attendance::create([
             'employee_id' => $user->employee->id,

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\AttendanceAction;
 use App\Enums\AttendanceCorrectionStatus;
+use App\Enums\AttendanceStatus;
 use App\Enums\Permission;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
@@ -24,6 +25,8 @@ use Illuminate\Validation\ValidationException;
 
 class AttendanceCorrectionService
 {
+    public function __construct(private readonly AttendanceService $attendanceService) {}
+
     public function index(User $user, array $filters, int $perPage): LengthAwarePaginator
     {
         $query = AttendanceCorrection::query()->with(['attendance.employee', 'logs']);
@@ -89,6 +92,7 @@ class AttendanceCorrectionService
             ]);
 
             $correction->logs()->createMany($logs);
+            $attendance->update(['status' => AttendanceStatus::WAITING_FOR_APPROVAL]);
 
             return $correction->load(['attendance', 'logs']);
         });
@@ -121,6 +125,7 @@ class AttendanceCorrectionService
             }
 
             $correction->update(['status' => AttendanceCorrectionStatus::APPROVED]);
+            $attendance->update(['status' => $this->attendanceService->finalizedStatus($attendance)]);
 
             return $correction->fresh()->load(['attendance', 'logs']);
         });
@@ -135,6 +140,9 @@ class AttendanceCorrectionService
 
             $this->ensurePending($correction);
             $correction->update(['status' => AttendanceCorrectionStatus::REJECTED]);
+            $correction->attendance->update([
+                'status' => $this->attendanceService->finalizedStatus($correction->attendance),
+            ]);
 
             return $correction->fresh()->load(['attendance', 'logs']);
         });
