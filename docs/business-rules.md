@@ -48,13 +48,15 @@ Attendance rules are documented separately in `attendance-design.md`.
 - Attendance actions must alternate between clock-in and clock-out.
 - Employees record direct actions through one endpoint, and the system derives the next action from the latest log.
 - Employees require the `attendance.record` permission to record an action.
+- HR can view all attendance records; employees can view only their own attendance records.
+- Employee attendance listings cannot use the employee-name filter.
 - Consecutive attendance actions must respect the configured minimum interval.
 - The configured attendance method is not validated in Version 1.
 - Employees select an existing attendance record and submit its complete proposed timeline with a note.
 - A pending correction does not alter the selected attendance record's logs; only HR approval replaces them.
 - An attendance record may have only one pending correction.
 - HR can view all attendance correction requests; employees can view only requests for their own attendance records.
-- Employee correction listings cannot use employee or department filters.
+- Employee correction listings cannot use employee ID, employee name, or department filters.
 
 ---
 

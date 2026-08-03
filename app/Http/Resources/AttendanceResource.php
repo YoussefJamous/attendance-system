@@ -12,6 +12,7 @@ class AttendanceResource extends JsonResource
         return [
             'id' => $this->id,
             'employee_id' => $this->employee_id,
+            'employee_name' => $this->whenLoaded('employee', fn () => $this->employee->fullName()),
             'attendance_date' => $this->attendance_date->toDateString(),
             'status' => $this->status->value,
             'logs' => AttendanceLogResource::collection($this->whenLoaded('logs')),

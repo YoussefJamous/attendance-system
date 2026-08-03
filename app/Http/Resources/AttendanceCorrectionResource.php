@@ -13,6 +13,7 @@ class AttendanceCorrectionResource extends JsonResource
             'id' => $this->id,
             'attendance_id' => $this->attendance_id,
             'employee_id' => $this->attendance->employee_id,
+            'employee_name' => $this->attendance->employee->fullName(),
             'attendance_date' => $this->attendance->attendance_date->toDateString(),
             'note' => $this->note,
             'status' => $this->status->value,

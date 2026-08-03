@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Pipelines\AttendanceCorrection\AttendanceDateFilterPipeline;
 use App\Pipelines\AttendanceCorrection\DepartmentFilterPipeline;
 use App\Pipelines\AttendanceCorrection\EmployeeFilterPipeline;
+use App\Pipelines\AttendanceCorrection\EmployeeNameFilterPipeline;
 use App\Pipelines\AttendanceCorrection\SortPipeline;
 use App\Pipelines\AttendanceCorrection\StatusFilterPipeline;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -25,7 +26,7 @@ class AttendanceCorrectionService
 {
     public function index(User $user, array $filters, int $perPage): LengthAwarePaginator
     {
-        $query = AttendanceCorrection::query()->with(['attendance', 'logs']);
+        $query = AttendanceCorrection::query()->with(['attendance.employee', 'logs']);
 
         if (! $user->can(Permission::ATTENDANCE_CORRECTIONS_MANAGE->value)) {
             $query->whereHas('attendance.employee', fn ($employeeQuery) => $employeeQuery->where('user_id', $user->id));
@@ -41,6 +42,7 @@ class AttendanceCorrectionService
                     $filters['date_to'] ?? null,
                 ),
                 new EmployeeFilterPipeline($filters['employee_id'] ?? null),
+                new EmployeeNameFilterPipeline($filters['employee_name'] ?? null),
                 new DepartmentFilterPipeline($filters['department_id'] ?? null),
                 new SortPipeline(
                     $filters['sort_by'] ?? 'created_at',

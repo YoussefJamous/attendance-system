@@ -37,6 +37,8 @@ class RolePermissionSeeder extends Seeder
             Permission::HOLIDAYS_DELETE->value,
             Permission::SYSTEM_CONFIGURATION_VIEW->value,
             Permission::SYSTEM_CONFIGURATION_MANAGE->value,
+            Permission::ATTENDANCE_VIEW->value,
+            Permission::ATTENDANCE_MANAGE->value,
             Permission::ATTENDANCE_CORRECTIONS_VIEW->value,
             Permission::ATTENDANCE_CORRECTIONS_MANAGE->value,
         ]);
@@ -46,6 +48,7 @@ class RolePermissionSeeder extends Seeder
             Permission::PROFILE_UPDATE->value,
             Permission::DEPARTMENTS_VIEW->value,
             Permission::ATTENDANCE_RECORD->value,
+            Permission::ATTENDANCE_VIEW->value,
             Permission::ATTENDANCE_CORRECTIONS_VIEW->value,
             Permission::ATTENDANCE_CORRECTIONS_CREATE->value,
         ]);

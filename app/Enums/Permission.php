@@ -39,13 +39,13 @@ enum Permission: string
 
     // Attendance
     case ATTENDANCE_RECORD = 'attendance.record';
+    case ATTENDANCE_VIEW = 'attendance.view';
+    case ATTENDANCE_MANAGE = 'attendance.manage';
     case ATTENDANCE_CORRECTIONS_VIEW = 'attendance-corrections.view';
     case ATTENDANCE_CORRECTIONS_CREATE = 'attendance-corrections.create';
     case ATTENDANCE_CORRECTIONS_MANAGE = 'attendance-corrections.manage';
 
-    /* case ATTENDANCE_VIEW = 'attendance.view';
-
-    // Leave
+    /* // Leave
     case LEAVE_VIEW = 'leave.view';
     case LEAVE_CREATE = 'leave.create';
     case LEAVE_APPROVE = 'leave.approve';

@@ -41,7 +41,9 @@ Route::prefix('v1')->group(function () {
 
         // Attendance Routes
         Route::middleware('attendance.configured')->prefix('attendance')->controller(V1\AttendanceController::class)->group(function () {
+            Route::get('/', 'index');
             Route::post('actions', 'record');
+            Route::get('{attendance}', 'show');
         });
 
         // Attendance Correction Routes

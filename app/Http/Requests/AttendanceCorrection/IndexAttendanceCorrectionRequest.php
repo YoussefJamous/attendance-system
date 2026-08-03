@@ -22,6 +22,7 @@ class IndexAttendanceCorrectionRequest extends FormRequest
             'date_from' => ['sometimes', 'date_format:Y-m-d'],
             'date_to' => ['sometimes', 'date_format:Y-m-d', 'after_or_equal:date_from'],
             'employee_id' => ['sometimes', 'uuid', 'exists:employees,id'],
+            'employee_name' => ['sometimes', 'string', 'max:255'],
             'department_id' => ['sometimes', 'uuid', 'exists:departments,id'],
             'sort_by' => ['sometimes', Rule::in(['created_at', 'attendance_date', 'status'])],
             'sort_direction' => ['sometimes', Rule::in(['asc', 'desc'])],
@@ -36,7 +37,7 @@ class IndexAttendanceCorrectionRequest extends FormRequest
                 return;
             }
 
-            foreach (['employee_id', 'department_id'] as $field) {
+            foreach (['employee_id', 'employee_name', 'department_id'] as $field) {
                 if ($this->filled($field)) {
                     $validator->errors()->add($field, 'This filter is only available to HR users.');
                 }

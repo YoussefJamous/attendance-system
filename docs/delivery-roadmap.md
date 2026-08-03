@@ -19,7 +19,7 @@ This document tracks delivered and planned capabilities by domain. It distinguis
 | Employees | Partial | Full employee lifecycle management | No profile endpoint yet |
 | Shifts | Complete | Full shift and Shift Day management | Receives an optional shift assignment |
 | Holidays | Complete | Full holiday management and Excel import | No holiday endpoint required yet |
-| Attendance Tracking | Partial | System configuration and clock actions are available; attendance review is planned | Can clock in and out |
+| Attendance Tracking | Partial | System configuration and filtered attendance review are available | Can clock in, clock out, and view own attendance |
 | Attendance Corrections | Complete | Can list, filter, approve, and reject correction requests | Can submit and view filtered own correction requests |
 | Overtime | Planned | Will approve or reject overtime | Will submit overtime requests |
 | Leave Management | Planned | Will manage leave policy and approvals | Will submit leave requests |
@@ -198,10 +198,12 @@ Delivered for employees:
 - Clock in and clock out with a required private image.
 - Use a server-managed action timestamp.
 - Record actions through one endpoint using the `attendance.record` permission and require an assigned shift.
+- List and view only their own attendance records.
 
 Delivered for HR:
 
 - Configure the global attendance method, minimum action interval, and grace minutes.
+- List and view all attendance records, with employee-name, date, status, sorting, and pagination filters.
 
 Delivered rules:
 
@@ -215,7 +217,6 @@ Delivered rules:
 Remaining:
 
 - Exact request payload for GPS and Office WiFi evidence.
-- Employee and HR attendance-list filtering and reporting requirements.
 - Attendance status finalization and working-time calculation jobs.
 
 ### 4. Attendance Corrections
@@ -232,7 +233,7 @@ Delivered for employees:
 
 Delivered for HR:
 
-- List and filter correction requests by status, attendance date, employee, or department.
+- List and filter correction requests by status, attendance date, employee ID/name, or department.
 - Approve or reject pending requests.
 
 Delivered rules:

@@ -167,18 +167,20 @@ class AttendanceCorrectionTest extends TestCase
         $secondEmployee = $this->employeeWithPermissions();
         $firstEmployee->employee->update(['department_id' => $engineering->id]);
         $secondEmployee->employee->update(['department_id' => $design->id]);
+        $firstEmployee->employee->update(['first_name' => 'Amina', 'last_name' => 'Rahman']);
 
         $firstCorrection = $this->correctionFor($firstEmployee, '2026-07-20', AttendanceCorrectionStatus::PENDING);
         $this->correctionFor($firstEmployee, '2026-07-22', AttendanceCorrectionStatus::PENDING);
         $this->correctionFor($secondEmployee, '2026-07-21', AttendanceCorrectionStatus::APPROVED);
         $hr = $this->userWithPermission(Permission::ATTENDANCE_CORRECTIONS_MANAGE);
 
-        $response = $this->actingAs($hr)->getJson('/api/v1/attendance-corrections?status=pending&date_from=2026-07-20&date_to=2026-07-21&employee_id='.$firstEmployee->employee->id.'&department_id='.$engineering->id.'&sort_by=attendance_date&sort_direction=asc');
+        $response = $this->actingAs($hr)->getJson('/api/v1/attendance-corrections?status=pending&date_from=2026-07-20&date_to=2026-07-21&employee_id='.$firstEmployee->employee->id.'&employee_name=Amina&department_id='.$engineering->id.'&sort_by=attendance_date&sort_direction=asc');
 
         $response
             ->assertOk()
             ->assertJsonCount(1, 'data.attendance_corrections')
-            ->assertJsonPath('data.attendance_corrections.0.id', $firstCorrection->id);
+            ->assertJsonPath('data.attendance_corrections.0.id', $firstCorrection->id)
+            ->assertJsonPath('data.attendance_corrections.0.employee_name', 'Amina Rahman');
     }
 
     public function test_employee_index_is_scoped_to_their_corrections_and_rejects_hr_only_filters(): void
@@ -199,6 +201,11 @@ class AttendanceCorrectionTest extends TestCase
             ->getJson('/api/v1/attendance-corrections?employee_id='.$secondEmployee->employee->id)
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['employee_id']);
+
+        $this->actingAs($firstEmployee)
+            ->getJson('/api/v1/attendance-corrections?employee_name=Other')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['employee_name']);
     }
 
     private function submitCorrection(User $user): AttendanceCorrection

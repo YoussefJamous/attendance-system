@@ -39,4 +39,5 @@ The project favors Laravel conventions over custom abstractions.
 - Attendance Log defines a clock-in or clock-out action, timestamped by its server-managed `created_at` value, with image evidence.
 - Attendance Correction stores a proposed full attendance timeline until HR approves or rejects it.
 - Attendance Correction listing establishes the requester scope in the service before reusable filters are applied.
+- Attendance listing establishes HR-all or employee-own scope in the service before reusable filters are applied.
 - Overtime will be added in a later subdomain.

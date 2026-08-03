@@ -4,17 +4,57 @@ namespace App\Services;
 
 use App\Enums\AttendanceAction;
 use App\Enums\AttendanceStatus;
+use App\Enums\Permission;
 use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\SystemConfiguration;
 use App\Models\User;
+use App\Pipelines\Attendance\AttendanceDateFilterPipeline;
+use App\Pipelines\Attendance\EmployeeNameFilterPipeline;
+use App\Pipelines\Attendance\SortPipeline;
+use App\Pipelines\Attendance\StatusFilterPipeline;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class AttendanceService
 {
+    public function index(User $user, array $filters, int $perPage): LengthAwarePaginator
+    {
+        $query = Attendance::query()->with(['employee', 'logs']);
+
+        if (! $user->can(Permission::ATTENDANCE_MANAGE->value)) {
+            $query->whereHas('employee', fn ($employeeQuery) => $employeeQuery->where('user_id', $user->id));
+        }
+
+        $query = app(Pipeline::class)
+            ->send($query)
+            ->through([
+                new EmployeeNameFilterPipeline($filters['employee_name'] ?? null),
+                new AttendanceDateFilterPipeline(
+                    $filters['attendance_date'] ?? null,
+                    $filters['date_from'] ?? null,
+                    $filters['date_to'] ?? null,
+                ),
+                new StatusFilterPipeline($filters['status'] ?? null),
+                new SortPipeline(
+                    $filters['sort_by'] ?? 'attendance_date',
+                    $filters['sort_direction'] ?? 'desc',
+                ),
+            ])
+            ->thenReturn();
+
+        return $query->paginate($perPage)->appends($filters);
+    }
+
+    public function show(Attendance $attendance): Attendance
+    {
+        return $attendance->loadMissing(['employee', 'logs']);
+    }
+
     public function record(User $user, UploadedFile $image): Attendance
     {
         return DB::transaction(function () use ($user, $image) {

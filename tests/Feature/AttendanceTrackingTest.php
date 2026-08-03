@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enums\AttendanceMethod;
+use App\Enums\AttendanceStatus;
 use App\Enums\Permission;
+use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Shift;
 use App\Models\SystemConfiguration;
@@ -184,6 +186,54 @@ class AttendanceTrackingTest extends TestCase
             ->assertJsonValidationErrors(['image']);
     }
 
+    public function test_hr_can_filter_and_sort_attendances(): void
+    {
+        $this->createConfiguration();
+        $firstEmployee = $this->attendanceUser();
+        $secondEmployee = $this->attendanceUser();
+        $firstEmployee->employee->update(['first_name' => 'Amina', 'last_name' => 'Rahman']);
+        $secondEmployee->employee->update(['first_name' => 'Bilal', 'last_name' => 'Aziz']);
+        $firstAttendance = $this->attendanceFor($firstEmployee, '2026-07-20');
+        $this->attendanceFor($secondEmployee, '2026-07-21', AttendanceStatus::COMPLETED);
+        $hr = $this->userWithPermission(Permission::ATTENDANCE_MANAGE);
+
+        $this->actingAs($hr)
+            ->getJson('/api/v1/attendance?employee_name=Amina&date_from=2026-07-20&date_to=2026-07-20&status=incomplete&sort_by=employee_name&sort_direction=asc')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.attendances')
+            ->assertJsonPath('data.attendances.0.id', $firstAttendance->id)
+            ->assertJsonPath('data.attendances.0.employee_name', 'Amina Rahman');
+    }
+
+    public function test_employee_can_view_only_their_own_attendances(): void
+    {
+        $this->createConfiguration();
+        $firstEmployee = $this->attendanceUser();
+        $secondEmployee = $this->attendanceUser();
+        $firstAttendance = $this->attendanceFor($firstEmployee, '2026-07-20');
+        $secondAttendance = $this->attendanceFor($secondEmployee, '2026-07-20');
+
+        $this->actingAs($firstEmployee)
+            ->getJson('/api/v1/attendance')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.attendances')
+            ->assertJsonPath('data.attendances.0.id', $firstAttendance->id);
+
+        $this->actingAs($firstEmployee)
+            ->getJson('/api/v1/attendance?employee_name=Other')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['employee_name']);
+
+        $this->actingAs($firstEmployee)
+            ->getJson("/api/v1/attendance/{$firstAttendance->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $firstAttendance->id);
+
+        $this->actingAs($firstEmployee)
+            ->getJson("/api/v1/attendance/{$secondAttendance->id}")
+            ->assertForbidden();
+    }
+
     private function createConfiguration(array $attributes = []): SystemConfiguration
     {
         return SystemConfiguration::create([
@@ -197,14 +247,24 @@ class AttendanceTrackingTest extends TestCase
     private function attendanceUser(bool $withAttendancePermissions = true): User
     {
         $user = User::factory()->create();
-        $shift = Shift::create(['name' => 'Attendance Shift']);
+        $shift = Shift::create(['name' => fake()->unique()->words(2, true)]);
         Employee::factory()->for($user)->create(['shift_id' => $shift->id]);
 
         if ($withAttendancePermissions) {
             $this->grantPermission($user, Permission::ATTENDANCE_RECORD);
+            $this->grantPermission($user, Permission::ATTENDANCE_VIEW);
         }
 
         return $user;
+    }
+
+    private function attendanceFor(User $user, string $date, AttendanceStatus $status = AttendanceStatus::INCOMPLETE): Attendance
+    {
+        return Attendance::create([
+            'employee_id' => $user->employee->id,
+            'attendance_date' => $date,
+            'status' => $status,
+        ]);
     }
 
     private function userWithPermission(Permission $permission): User

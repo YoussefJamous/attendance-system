@@ -49,6 +49,7 @@ System Configuration
 Attendance
 - Daily attendance summary for one employee
 - Attendance date and status
+- Employee relationship supports HR and employee-scoped attendance listing
 
 Attendance Log
 - Clock-in or clock-out action belonging to one Attendance

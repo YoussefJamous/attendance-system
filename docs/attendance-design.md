@@ -27,6 +27,7 @@ Employees may be created before a shift is assigned. A shift assignment will be 
 - Every direct clock action requires an image as attendance evidence.
 - Actions must alternate: clock-in, then clock-out, with later intervals following the same order.
 - Employees require the `attendance.record` permission to record an action.
+- Attendance read access is scoped: HR can review all records, while employees can list and view only their own records.
 
 ---
 

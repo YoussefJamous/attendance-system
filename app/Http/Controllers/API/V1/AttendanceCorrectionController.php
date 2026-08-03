@@ -48,7 +48,7 @@ class AttendanceCorrectionController extends ApiController
         $this->authorize('view', $attendanceCorrection);
 
         return $this->success(
-            new AttendanceCorrectionResource($attendanceCorrection->load(['attendance', 'logs'])),
+            new AttendanceCorrectionResource($attendanceCorrection->load(['attendance.employee', 'logs'])),
             'Attendance correction retrieved successfully.',
         );
     }
